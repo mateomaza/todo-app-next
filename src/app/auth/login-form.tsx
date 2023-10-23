@@ -19,7 +19,6 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div>
-      <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="text"

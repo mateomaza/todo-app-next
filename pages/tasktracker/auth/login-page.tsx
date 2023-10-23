@@ -8,8 +8,8 @@ export default function Login() {
       <LoginForm />
       <p>
         Haven&apos;t got an account?{" "}
-        <Link href="/register">
-          <a>Click here to register</a>
+        <Link href="/tasktracker/auth/register-page">
+          Click here to register
         </Link>
       </p>
     </div>

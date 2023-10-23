@@ -8,8 +8,8 @@ export default function Register() {
       <RegisterForm />
       <p>
         Already got an account?{" "}
-        <Link href="/login">
-          <a>Click here to login</a>
+        <Link href="/tasktracker/auth/login-page">
+          Click here to login
         </Link>
       </p>
     </div>
