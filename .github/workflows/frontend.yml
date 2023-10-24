@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: Set up working directory
-        run: cd todo-app-next
-
       - name: Install Dependencies
         run: npm install
 
