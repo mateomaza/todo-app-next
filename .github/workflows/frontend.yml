@@ -20,9 +20,10 @@ jobs:
 
     - name: Install Dependencies
       run: npm install
+      working-directory: ./todo-app-next
 
     - name: Build Application
       run: npm run build
 
     - name: Test Application
-      run: next test
+      run: npm test
