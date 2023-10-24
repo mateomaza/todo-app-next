@@ -10,20 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check Out Repository
-      uses: actions/checkout@v2
+      - name: Check Out Repository
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
 
-    - name: Install Dependencies
-      run: npm install
-      working-directory: ./todo-app-next
+      - name: Set up working directory
+        run: cd todo-app-next
 
-    - name: Build Application
-      run: npm run build
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Test Application
-      run: npm test
+      - name: Build Application
+        run: npm run build
+
+      - name: Test Application
+        run: npm test
