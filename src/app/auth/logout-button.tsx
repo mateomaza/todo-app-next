@@ -8,7 +8,7 @@ export default function Logout() {
     setLoading(true);
     setTimeout(() => {
       localStorage.removeItem('token');
-      window.location.href = '/login'; 
+      window.location.href = '/login-page'; 
     }, 2000); 
   }, []);
 

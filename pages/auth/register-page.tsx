@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RegisterForm } from "@/app/auth/register-form";
+import RegisterForm  from "@/app/auth/register";
 
 export default function Register() {
   return (
@@ -8,7 +8,7 @@ export default function Register() {
       <RegisterForm />
       <p>
         Already got an account?{" "}
-        <Link href="/tasktracker/auth/login-page">
+        <Link href="/auth/login-page">
           Click here to login
         </Link>
       </p>
