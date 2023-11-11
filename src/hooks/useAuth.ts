@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { isAuthenticated } from '@/services/auth-service';
+import { useState, useEffect } from "react";
+import { isAuthenticated } from "@/services/auth-service";
 
-export const useAuth = () => {
+const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
@@ -17,3 +17,5 @@ export const useAuth = () => {
 
   return { loading, authenticated };
 };
+
+export default useAuth;

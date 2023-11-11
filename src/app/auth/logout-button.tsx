@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { BounceLoader } from 'react-spinners';
+import { useEffect, useState } from "react";
+import { BounceLoader } from "react-spinners";
 
 export default function Logout() {
   const [loading, setLoading] = useState(false);
@@ -7,9 +7,9 @@ export default function Logout() {
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      localStorage.removeItem('token');
-      window.location.href = '/login-page'; 
-    }, 2000); 
+      localStorage.removeItem("token");
+      window.location.href = "/auth/login-page";
+    }, 2000);
   }, []);
 
   return (

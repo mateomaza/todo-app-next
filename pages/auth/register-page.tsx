@@ -1,5 +1,5 @@
 import Link from "next/link";
-import RegisterForm  from "@/app/auth/register";
+import RegisterForm from "@/app/auth/register-form";
 
 export default function Register() {
   return (
@@ -8,9 +8,7 @@ export default function Register() {
       <RegisterForm />
       <p>
         Already got an account?{" "}
-        <Link href="/auth/login-page">
-          Click here to login
-        </Link>
+        <Link href="/auth/login-page">Click here to login</Link>
       </p>
     </div>
   );

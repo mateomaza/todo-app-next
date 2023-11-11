@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LoginForm  from "@/app/auth/login";
+import LoginForm from "@/app/auth/login-form";
 
 export default function Login() {
   return (
@@ -8,9 +8,7 @@ export default function Login() {
       <LoginForm />
       <p>
         Haven&apos;t got an account?{" "}
-        <Link href="/auth/register-page">
-          Click here to register
-        </Link>
+        <Link href="/auth/register-page">Click here to register</Link>
       </p>
     </div>
   );

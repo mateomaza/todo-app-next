@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const API_URL = "http://localhost:3001/api/tasks";
 
@@ -12,14 +12,14 @@ export interface TaskType {
 }
 
 export const fetchTasks = async () => {
-    try {
-      const response: AxiosResponse<TaskType[]> = await axios.get(`${API_URL}`);
-      return response.data || []
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      return []
-    }
-  };
+  try {
+    const response: AxiosResponse<TaskType[]> = await axios.get(`${API_URL}`);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    return [];
+  }
+};
 
 export const fetchTaskById = async (id: string) => {
   return axios.get(`${API_URL}/${id}`);
