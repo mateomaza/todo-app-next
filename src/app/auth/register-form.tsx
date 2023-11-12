@@ -20,10 +20,11 @@ const RegisterForm = () => {
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRegisterData({
-      ...registerData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setRegisterData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -11,18 +11,18 @@ type FormData = {
 
 const LoginForm = () => {
   const [loginData, setLoginData] = useState<FormData>({
-    username: "jkj",
+    username: "",
     password: "",
   });
   const [statusCode, setStatusCode] = useState<number>(0);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name, e.target.value); // Add this to check if the event is firing correctly
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setLoginData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +32,6 @@ const LoginForm = () => {
       localStorage.setItem("token", response.data.token);
       router.push("/");
     } catch (error) {
-      console.error("Login failed:", error);
       if (axios.isAxiosError(error) && error.response?.status) {
         setStatusCode(error.response?.status);
       }
@@ -46,10 +45,7 @@ const LoginForm = () => {
       <input
         type="text"
         value={loginData.username}
-        onChange={(e) => {
-          console.log('Username field:', e.target.value);
-          setLoginData({ ...loginData, username: e.target.value });
-        }}
+        onChange={handleChange}
         placeholder="Username"
         name="username"
         required
