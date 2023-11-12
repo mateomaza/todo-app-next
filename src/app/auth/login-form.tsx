@@ -11,13 +11,14 @@ type FormData = {
 
 const LoginForm = () => {
   const [loginData, setLoginData] = useState<FormData>({
-    username: "",
+    username: "jkj",
     password: "",
   });
   const [statusCode, setStatusCode] = useState<number>(0);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.name, e.target.value); // Add this to check if the event is firing correctly
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
@@ -45,8 +46,12 @@ const LoginForm = () => {
       <input
         type="text"
         value={loginData.username}
-        onChange={handleChange}
+        onChange={(e) => {
+          console.log('Username field:', e.target.value);
+          setLoginData({ ...loginData, username: e.target.value });
+        }}
         placeholder="Username"
+        name="username"
         required
       />
       <input
@@ -54,6 +59,7 @@ const LoginForm = () => {
         value={loginData.password}
         onChange={handleChange}
         placeholder="Password"
+        name="password"
         required
       />
       <button type="submit">Login</button>
