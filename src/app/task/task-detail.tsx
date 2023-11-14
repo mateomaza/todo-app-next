@@ -5,7 +5,7 @@ import TaskModal from "./task-modal";
 import Button from "@mui/material/Button";
 
 const TaskDetail = ({ task, setTasks }: { task: any, setTasks: (tasks: TaskType[]) => void; }) => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
   return (

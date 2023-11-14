@@ -18,6 +18,7 @@ const LoginForm = () => {
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target)
     const { name, value } = e.target;
     setLoginData(prevState => ({
       ...prevState,

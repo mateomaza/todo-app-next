@@ -6,6 +6,7 @@ import { fetchTasks } from "@/services/task-service";
 import ErrorComponent from "../nav/error";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Switch from "@mui/material/Switch";
 
 type FormData = {
   title: string;
@@ -21,7 +22,18 @@ const TaskForm = ({
   task?: any;
   setTasks: (tasks: TaskType[]) => void;
 }) => {
-  const initialDate = task && task.time ? task.time : new Date();
+
+  const getInitialDate = () => {
+    if (task && task.time) {
+      return new Date(task.time);
+    } else {
+      const newDate = new Date();
+      newDate.setHours(newDate.getHours() + 1);
+      return newDate;
+    }
+  };
+  const initialDate = getInitialDate();
+
   const [taskData, setTaskData] = useState<FormData>({
     title: task?.title || "",
     description: task?.description || "",
@@ -33,18 +45,21 @@ const TaskForm = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setTaskData({
-      ...taskData,
-      [e.target.name]: e.target.value,
-    });
+    const target = e.target as HTMLInputElement;
+    const newValue = target.name === "completed" ? target.checked : target.value;
+
+    setTaskData((prevState) => ({
+      ...prevState,
+      [target.name]: newValue,
+    }));
   };
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      setTaskData({
-        ...taskData,
+      setTaskData((prevState) => ({
+        ...prevState,
         time: date,
-      });
+      }));
     }
   };
 
@@ -81,19 +96,22 @@ const TaskForm = ({
         value={taskData.title}
         onChange={handleChange}
         placeholder="Title"
+        name="title"
         required
       />
       <textarea
         value={taskData.description}
         onChange={handleChange}
         placeholder="Description"
+        name="description"
       />
       <label>
         Completed:
-        <input
-          type="checkbox"
+        <Switch
           checked={taskData.completed}
           onChange={handleChange}
+          name="completed"
+          color="primary"
         />
       </label>
       <DatePicker

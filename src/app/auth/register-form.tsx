@@ -50,6 +50,7 @@ const RegisterForm = () => {
         value={registerData.username}
         onChange={handleChange}
         placeholder="Username"
+        name="username"
         required
       />
       <input
@@ -57,6 +58,7 @@ const RegisterForm = () => {
         value={registerData.email}
         onChange={handleChange}
         placeholder="Email"
+        name="email"
         required
       />
       <input
@@ -64,6 +66,7 @@ const RegisterForm = () => {
         value={registerData.password}
         onChange={handleChange}
         placeholder="Password"
+        name="password"
         required
       />
       <button type="submit">Register</button>

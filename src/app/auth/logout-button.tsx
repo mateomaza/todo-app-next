@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BounceLoader } from "react-spinners";
 
-export default function Logout() {
+export default function LogoutButton() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

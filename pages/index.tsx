@@ -7,11 +7,12 @@ import TaskModal from "@/app/task/task-modal";
 import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import PrivateRoute from "@/services/private-route";
+import LogoutButton from "@/app/auth/logout-button";
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
