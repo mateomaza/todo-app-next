@@ -1,13 +1,12 @@
-import axios from "axios";
+import axiosInstance from "./axios-instance";
 
-const API_URL = "http://localhost:3001/api/auth";
 
 export const loginUser = async (credentials: {
   username: string;
   password: string;
 }) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, credentials);
+    const response = await axiosInstance.post('auth/login', credentials);
     if (response.data.access_token) {
       localStorage.setItem("token", response.data.access_token);
     }
@@ -24,7 +23,7 @@ export const registerUser = async (userData: {
   password: string;
 }) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, userData);
+    const response = await axiosInstance.post('auth/register', userData);
     return response.data;
   } catch (error) {
     console.error("Registration Error:", error);
@@ -36,7 +35,7 @@ export const isAuthenticated = async () => {
   const token = localStorage.getItem("token");
   if (!token) return false;
   try {
-    const response = await axios.get(`${API_URL}/verifyToken`, {
+    const response = await axiosInstance.get('auth/verifyToken', {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data.verified && response.status === 200;
