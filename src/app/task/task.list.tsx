@@ -1,6 +1,6 @@
 import React from "react";
-import { TaskType } from "@/services/task-service";
-import TaskDetail from "./task-detail";
+import { TaskType } from "@/services/task.service";
+import TaskDetail from "./task.detail";
 
 const TaskList = ({ tasks, setTasks }: { tasks: TaskType[], setTasks: (tasks: TaskType[]) => void; }) => {
   return (

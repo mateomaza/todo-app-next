@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { isAuthenticated } from "@/services/auth-service";
+import { isAuthenticated } from "@/services/auth.service";
 
 const useAuth = () => {
   const [loading, setLoading] = useState(true);

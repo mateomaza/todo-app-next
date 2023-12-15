@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import { TaskType } from "@/services/task-service";
-import TaskForm from "./task-form";
-import TaskModal from "./task-modal";
+import { TaskType } from "@/services/task.service";
+import TaskForm from "./task.form";
+import TaskModal from "./task.modal";
 import Button from "@mui/material/Button";
 
 const TaskDetail = ({ task, setTasks }: { task: any, setTasks: (tasks: TaskType[]) => void; }) => {

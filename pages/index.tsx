@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { fetchTasks } from "@/services/task-service";
-import TaskList from "@/app/task/task-list";
-import TaskForm from "@/app/task/task-form";
-import { TaskType } from "@/services/task-service";
-import TaskModal from "@/app/task/task-modal";
+import { fetchTasks } from "@/services/task.service";
+import TaskList from "@/app/task/task.list";
+import TaskForm from "@/app/task/task.form";
+import { TaskType } from "@/services/task.service";
+import TaskModal from "@/app/task/task.modal";
 import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
-import PrivateRoute from "@/services/private-route";
-import LogoutButton from "@/app/auth/logout-button";
+import PrivateRoute from "@/services/private.route";
+import LogoutButton from "@/app/auth/logout.button";
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);

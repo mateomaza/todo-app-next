@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { createTask, updateTask } from "@/services/task-service";
-import { TaskType } from "@/services/task-service";
-import { fetchTasks } from "@/services/task-service";
+import { createTask, updateTask } from "@/services/task.service";
+import { TaskType } from "@/services/task.service";
+import { fetchTasks } from "@/services/task.service";
 import ErrorComponent from "../nav/error";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

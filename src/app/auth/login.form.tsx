@@ -1,27 +1,25 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
-import { registerUser } from "@/services/auth-service";
-import ErrorComponent from "../nav/error";
+import { loginUser } from "@/services/auth.service";
+import ErrorComponent from "@/app/nav/error";
+import axios from "axios";
 
 type FormData = {
   username: string;
   password: string;
-  email: string;
 };
 
-const RegisterForm = () => {
-  const [registerData, setRegisterData] = useState<FormData>({
+const LoginForm = () => {
+  const [loginData, setLoginData] = useState<FormData>({
     username: "",
     password: "",
-    email: "",
   });
   const [statusCode, setStatusCode] = useState<number>(0);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setRegisterData(prevState => ({
+    setLoginData(prevState => ({
       ...prevState,
       [name]: value,
     }));
@@ -30,11 +28,10 @@ const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await registerUser(registerData);
+      const response = await loginUser(loginData);
       localStorage.setItem("token", response.data.token);
       router.push("/");
     } catch (error) {
-      console.error("Registration failed:", error);
       if (axios.isAxiosError(error) && error.response?.status) {
         setStatusCode(error.response?.status);
       }
@@ -47,31 +44,23 @@ const RegisterForm = () => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={registerData.username}
+        value={loginData.username}
         onChange={handleChange}
         placeholder="Username"
         name="username"
         required
       />
       <input
-        type="email"
-        value={registerData.email}
-        onChange={handleChange}
-        placeholder="Email"
-        name="email"
-        required
-      />
-      <input
         type="password"
-        value={registerData.password}
+        value={loginData.password}
         onChange={handleChange}
         placeholder="Password"
         name="password"
         required
       />
-      <button type="submit">Register</button>
+      <button type="submit">Login</button>
     </form>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;
