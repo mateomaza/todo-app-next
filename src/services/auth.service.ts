@@ -1,6 +1,6 @@
 import axiosInstance from "./axios.instance";
 
-export const loginUser = async (credentials: {
+export const login = async (credentials: {
   username: string;
   password: string;
 }) => {
@@ -16,7 +16,7 @@ export const loginUser = async (credentials: {
   }
 };
 
-export const registerUser = async (userData: {
+export const register = async (userData: {
   username: string;
   email: string;
   password: string;
@@ -44,7 +44,7 @@ export const isAuthenticated = async () => {
   }
 };
 
-export const logoutUser = () => {
+export const logout = () => {
   localStorage.removeItem("token");
 };
 

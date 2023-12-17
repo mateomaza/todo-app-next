@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { registerUser } from "@/services/auth.service";
+import { register } from "@/services/auth.service";
 import ErrorComponent from "../nav/error";
 
 type FormData = {
@@ -30,7 +30,7 @@ const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await registerUser(registerData);
+      const response = await register(registerData);
       localStorage.setItem("token", response.data.token);
       router.push("/");
     } catch (error) {
