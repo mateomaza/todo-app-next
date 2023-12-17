@@ -47,3 +47,14 @@ export const isAuthenticated = async () => {
 export const logoutUser = () => {
   localStorage.removeItem("token");
 };
+
+export let inactivityTimer: NodeJS.Timeout;
+
+export const startInactivityTimer = (logoutFunction: () => void, timeout: number = 15 * 60 * 1000) => {
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(logoutFunction, timeout);
+};
+
+export const resetInactivityTimer = (logoutFunction: () => void, timeout: number = 15 * 60 * 1000) => {
+  startInactivityTimer(logoutFunction, timeout);
+};

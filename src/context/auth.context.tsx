@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, PropsWithChildren } from 'react';
-import { logoutUser } from '@/services/auth.service';
+import { logoutUser, inactivityTimer, resetInactivityTimer, startInactivityTimer } from '@/services/auth.service';
 
 interface AuthState {
   token: string | null;
@@ -24,6 +24,18 @@ export const AuthProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     const handleLogout = () => {
       logoutUser();
       setAuthState({ token: null, user: null });
+    };
+
+    startInactivityTimer(handleLogout)
+
+    const activityHandler = () => resetInactivityTimer(handleLogout);
+    document.addEventListener('mousemove', activityHandler);
+    document.addEventListener('keypress', activityHandler);
+
+    return () => {
+      document.removeEventListener('mousemove', activityHandler);
+      document.removeEventListener('keypress', activityHandler);
+      clearTimeout(inactivityTimer);
     };
   }, []);
 
