@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
-import { isAuthenticated } from "@/services/auth.service";
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store';
 
 const useAuth = () => {
   const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] = useState(false);
+  const authenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const authStatus = await isAuthenticated();
-      setAuthenticated(authStatus);
+    if (authenticated !== null) {
       setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
+    }
+  }, [authenticated]);
 
   return { loading, authenticated };
 };
