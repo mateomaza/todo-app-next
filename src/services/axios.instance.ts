@@ -1,20 +1,23 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: "http://localhost:3001/api",
 });
 
-axiosInstance.interceptors.request.use(config => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+axiosInstance.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+);
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -32,14 +35,19 @@ axiosInstance.interceptors.response.use(
 );
 
 const refreshToken = async () => {
-    try {
-      const response = await axiosInstance.post('/auth/refresh');
-      const newAccessToken = response.data.access_token;
-      localStorage.setItem('token', newAccessToken);
-      return newAccessToken;
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-    }
-  };
+  try {
+    const response = await axiosInstance.post("/auth/refresh");
+    const newAccessToken = response.data.access_token;
+    localStorage.setItem("token", newAccessToken);
+    return newAccessToken;
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+  }
+};
 
-export default axiosInstance;
+export function handleError(error: unknown): string {
+  if (error instanceof AxiosError && error.response) {
+    return error.response.data;
+  }
+  return 'An unexpected error occurred';
+}
