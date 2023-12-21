@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import axiosInstance from "./axios.instance";
+import { axiosInstance } from "./axios.instance";
 
 export interface TaskType {
   id: string;
@@ -12,7 +12,9 @@ export interface TaskType {
 
 export const fetchTasks = async () => {
   try {
-    const response: AxiosResponse<TaskType[]> = await axiosInstance.get('tasks');
+    const response: AxiosResponse<TaskType[]> = await axiosInstance.get(
+      "tasks"
+    );
     return response.data || [];
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -25,11 +27,11 @@ export const fetchTaskById = async (id: string) => {
 };
 
 export const fetchUncompletedTasks = async () => {
-  return axiosInstance.get('tasks/find/uncompleted');
+  return axiosInstance.get("tasks/find/uncompleted");
 };
 
 export const createTask = async (taskData: any) => {
-  return axiosInstance.post('tasks/create', taskData);
+  return axiosInstance.post("tasks/create", taskData);
 };
 
 export const updateTask = async (id: string, taskData: any) => {

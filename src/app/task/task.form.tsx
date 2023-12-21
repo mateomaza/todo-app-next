@@ -22,7 +22,6 @@ const TaskForm = ({
   task?: any;
   setTasks: (tasks: TaskType[]) => void;
 }) => {
-
   const getInitialDate = () => {
     if (task && task.time) {
       return new Date(task.time);
@@ -35,18 +34,19 @@ const TaskForm = ({
   const initialDate = getInitialDate();
 
   const [taskData, setTaskData] = useState<FormData>({
-    title: task?.title || "",
-    description: task?.description || "",
+    title: task?.title || '',
+    description: task?.description || '',
     completed: task?.completed || false,
     time: initialDate,
   });
-  const [statusCode, setStatusCode] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const target = e.target as HTMLInputElement;
-    const newValue = target.name === "completed" ? target.checked : target.value;
+    const newValue =
+      target.name === 'completed' ? target.checked : target.value;
 
     setTaskData((prevState) => ({
       ...prevState,
@@ -68,8 +68,14 @@ const TaskForm = ({
       const response = await fetchTasks();
       setTasks(response);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status) {
-        setStatusCode(error.response?.status);
+      if (axios.isAxiosError(error) && error.response) {
+        const message = error.response?.status
+          ? `Error: ${error.message} (with status: ${error.response.status})`
+          : `Error: ${error.message}`
+        setErrorMessage(message);
+      }
+      else {
+        setErrorMessage('An unkown error occurred');
       }
     }
   };
@@ -85,9 +91,12 @@ const TaskForm = ({
       await createTask({ ...taskData, time: taskData.time.toISOString() });
     }
     refreshTasks();
+    setErrorMessage('');
   };
 
-  if (statusCode) return <ErrorComponent statusCode={statusCode} />;
+  if (errorMessage) {
+    return <ErrorComponent errorMessage={errorMessage} />;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
