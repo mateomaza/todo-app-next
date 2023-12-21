@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { login } from "@/services/auth.service";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store'; 
+import { login } from '@/redux/thunks/auth.thunks';
+import { RootState } from '@/redux/store';
 import ErrorComponent from "@/app/nav/error";
-import axios from "axios";
 
 type FormData = {
   username: string;
@@ -14,8 +16,9 @@ const LoginForm = () => {
     username: "",
     password: "",
   });
-  const [statusCode, setStatusCode] = useState<number>(0);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,20 +28,18 @@ const LoginForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await login(loginData);
-      localStorage.setItem("token", response.data.token);
-      router.push("/");
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status) {
-        setStatusCode(error.response?.status);
-      }
-    }
+    dispatch(login(loginData));
   };
 
-  if (statusCode) return <ErrorComponent statusCode={statusCode} />;
+  if (!loading && !error) {
+    router.push("/");
+  }
+
+  if (error) {
+    return <ErrorComponent errorMessage={error} />;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -58,7 +59,7 @@ const LoginForm = () => {
         name="password"
         required
       />
-      <button type="submit">Login</button>
+      <button type="submit" disabled={loading}>Login</button>
     </form>
   );
 };

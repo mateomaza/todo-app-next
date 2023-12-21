@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
-import { register } from "@/services/auth.service";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store'; 
+import { register } from '@/redux/thunks/auth.thunks';
+import { RootState } from '@/redux/store';
 import ErrorComponent from "../nav/error";
 
 type FormData = {
@@ -16,8 +18,9 @@ const RegisterForm = () => {
     password: "",
     email: "",
   });
-  const [statusCode, setStatusCode] = useState<number>(0);
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,21 +30,18 @@ const RegisterForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const response = await register(registerData);
-      localStorage.setItem("token", response.data.token);
-      router.push("/");
-    } catch (error) {
-      console.error("Registration failed:", error);
-      if (axios.isAxiosError(error) && error.response?.status) {
-        setStatusCode(error.response?.status);
-      }
-    }
+    dispatch(register(registerData));
   };
 
-  if (statusCode) return <ErrorComponent statusCode={statusCode} />;
+  if (!loading && !error) {
+    router.push("/");
+  }
+
+  if (error) {
+    return <ErrorComponent errorMessage={error} />;
+  }
 
   return (
     <form onSubmit={handleSubmit}>
