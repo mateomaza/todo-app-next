@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store'; 
@@ -20,7 +20,13 @@ const RegisterForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated && !error) {
+      router.push("/");
+    }
+  }, [isAuthenticated, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,10 +40,6 @@ const RegisterForm = () => {
     e.preventDefault();
     dispatch(register(registerData));
   };
-
-  if (!loading && !error) {
-    router.push("/");
-  }
 
   if (error) {
     return <ErrorComponent errorMessage={error} />;
@@ -69,7 +71,7 @@ const RegisterForm = () => {
         name="password"
         required
       />
-      <button type="submit">Register</button>
+      <button type="submit" disabled={loading}>Register</button>
     </form>
   );
 };

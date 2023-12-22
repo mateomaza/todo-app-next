@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store'; 
@@ -18,7 +18,13 @@ const LoginForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+  
+  useEffect(() => {
+    if (isAuthenticated && !error) {
+      router.push("/");
+    }
+  }, [isAuthenticated, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,10 +38,6 @@ const LoginForm = () => {
     e.preventDefault();
     dispatch(login(loginData));
   };
-
-  if (!loading && !error) {
-    router.push("/");
-  }
 
   if (error) {
     return <ErrorComponent errorMessage={error} />;
