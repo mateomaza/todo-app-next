@@ -1,4 +1,7 @@
+import { store } from "@/redux/store";
+import { refresh } from "@/redux/thunks/auth.thunks";
 import axios, { AxiosError } from "axios";
+import Router from 'next/router';
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:3001/api",
@@ -6,11 +9,9 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const token = store.getState().auth.token;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -24,26 +25,19 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const newToken = await refreshToken();
-      originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-      return axios(originalRequest);
+      try {
+        const newToken = await store.dispatch(refresh()).unwrap();
+        originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        Router.push('/auth/login-page');
+        return Promise.reject(refreshError);
+      }
     }
-
+    Router.push('/auth/login-page');
     return Promise.reject(error);
   }
 );
-
-const refreshToken = async () => {
-  try {
-    const response = await axiosInstance.post("/auth/refresh");
-    const newAccessToken = response.data.access_token;
-    localStorage.setItem("token", newAccessToken);
-    return newAccessToken;
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-  }
-};
 
 export function handleError(error: unknown): string {
   if (error instanceof AxiosError && error.response) {
