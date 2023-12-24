@@ -1,14 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance, handleError } from "@/services/axios.instance";
 import { LoginCredentials, RegistrationData } from "../types/auth.types";
+import { setupTokenRefresh } from '@/services/auth.service';
 
 export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/api/auth/login", credentials);
+      const access_token = response.data.access_token
+      setupTokenRefresh(access_token)
       return {
-        access_token: response.data.access_token,
+        access_token: access_token,
         user: response.data.user,
       };
     } catch (error) {
@@ -22,10 +25,12 @@ export const register = createAsyncThunk(
   async (userData: RegistrationData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/api/auth/register", userData);
+      const access_token = response.data.access_token
+      setupTokenRefresh(access_token)      
       return { 
         message: response.data.message, 
         user: response.data.user,
-        access_token: response.data.access_token
+        access_token: access_token,
       };
     } catch (error) {
       return rejectWithValue(handleError(error));
