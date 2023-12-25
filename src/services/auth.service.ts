@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
-import { store } from "../redux/store";
-import { refresh } from "../redux/thunks/auth.thunks";
+import { store } from "@/redux/store";
+import { refresh } from "@/redux/thunks/auth.thunks";
 
 interface DecodedJwtPayload {
   exp?: number;

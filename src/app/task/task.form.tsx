@@ -45,7 +45,7 @@ const TaskForm = ({
     time: initialDate,
   });
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const router = useRouter()
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (
@@ -92,8 +92,9 @@ const TaskForm = ({
     try {
       const actionResult = await dispatch(verifyToken());
       const verificationResult = actionResult.payload as VerifyResponse;
+      const isVerified = verificationResult.verified
 
-      if (verificationResult && verificationResult.verified) {
+      if (verificationResult && isVerified) {
         if (task) {
           await updateTask(task.id, {
             ...taskData,
@@ -103,14 +104,15 @@ const TaskForm = ({
           await createTask({ ...taskData, time: taskData.time.toISOString() });
         }
         refreshTasks();
-      } else {
+      }
+      if (!verificationResult || !isVerified) {
         setErrorMessage("Session verification failed. Please log in again.");
-        router.push('/auth/login-page');
+        router.push("/auth/login-page");
       }
     } catch (error) {
       const err = error as { message?: string };
       setErrorMessage(err.message || "An error occurred during verification.");
-      router.push('/auth/login-page');
+      router.push("/auth/login-page");
     }
   };
 
