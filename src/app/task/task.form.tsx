@@ -7,6 +7,11 @@ import ErrorComponent from "../nav/error";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Switch from "@mui/material/Switch";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { verifyToken } from "@/redux/thunks/auth.thunks";
+import { VerifyResponse } from "@/redux/types/auth.types";
+import { useRouter } from "next/router";
 
 type FormData = {
   title: string;
@@ -34,19 +39,21 @@ const TaskForm = ({
   const initialDate = getInitialDate();
 
   const [taskData, setTaskData] = useState<FormData>({
-    title: task?.title || '',
-    description: task?.description || '',
+    title: task?.title || "",
+    description: task?.description || "",
     completed: task?.completed || false,
     time: initialDate,
   });
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const target = e.target as HTMLInputElement;
     const newValue =
-      target.name === 'completed' ? target.checked : target.value;
+      target.name === "completed" ? target.checked : target.value;
 
     setTaskData((prevState) => ({
       ...prevState,
@@ -71,27 +78,40 @@ const TaskForm = ({
       if (axios.isAxiosError(error) && error.response) {
         const message = error.response?.status
           ? `Error: ${error.message} (with status: ${error.response.status})`
-          : `Error: ${error.message}`
+          : `Error: ${error.message}`;
         setErrorMessage(message);
-      }
-      else {
-        setErrorMessage('An unkown error occurred');
+      } else {
+        setErrorMessage("An unkown error occurred");
       }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (task) {
-      await updateTask(task.id, {
-        ...taskData,
-        time: taskData.time.toISOString(),
-      });
-    } else {
-      await createTask({ ...taskData, time: taskData.time.toISOString() });
+    setErrorMessage("");
+    try {
+      const actionResult = await dispatch(verifyToken());
+      const verificationResult = actionResult.payload as VerifyResponse;
+
+      if (verificationResult && verificationResult.verified) {
+        if (task) {
+          await updateTask(task.id, {
+            ...taskData,
+            time: taskData.time.toISOString(),
+          });
+        } else {
+          await createTask({ ...taskData, time: taskData.time.toISOString() });
+        }
+        refreshTasks();
+      } else {
+        setErrorMessage("Session verification failed. Please log in again.");
+        router.push('/auth/login-page');
+      }
+    } catch (error) {
+      const err = error as { message?: string };
+      setErrorMessage(err.message || "An error occurred during verification.");
+      router.push('/auth/login-page');
     }
-    refreshTasks();
-    setErrorMessage('');
   };
 
   if (errorMessage) {
