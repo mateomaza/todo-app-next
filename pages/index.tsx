@@ -11,7 +11,7 @@ import LogoutButton from "@/app/auth/logout.button";
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -31,7 +31,7 @@ const HomePage = () => {
       <Button variant="outlined" onClick={handleOpen}>
         Create a New Task
       </Button>
-      <TaskModal open={modalOpen} handleClose={handleClose}>
+      <TaskModal open={isModalOpen} handleClose={handleClose}>
         <TaskForm setTasks={setTasks} />
       </TaskModal>
       <TaskList tasks={tasks} setTasks={setTasks} />
