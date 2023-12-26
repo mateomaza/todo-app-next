@@ -5,12 +5,12 @@ import { AppDispatch } from "@/redux/store";
 import { verifyToken } from "@/redux/thunks/auth.thunks";
 
 interface DeleteButtonProps {
-  onDeleteConfirm: () => void;
+  onDelete: () => void;
   title: string;
   description: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ onDeleteConfirm, title, description }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ onDelete, title, description }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -19,7 +19,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ onDeleteConfirm, title, des
 
   const handleDelete = () => {
     dispatch(verifyToken())
-    onDeleteConfirm();
+    onDelete();
     handleCloseModal();
   };
 
@@ -37,3 +37,5 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ onDeleteConfirm, title, des
     </>
   );
 };
+
+export default DeleteButton
