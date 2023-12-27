@@ -12,6 +12,8 @@ import { AppDispatch } from "@/redux/store";
 import { verifyToken } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type FormData = {
   title: string;
@@ -47,6 +49,7 @@ const TaskForm = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -149,7 +152,7 @@ const TaskForm = ({
         showTimeSelect
         dateFormat="Pp"
       />
-      <button type="submit">{task ? "Update Task" : "Create Task"}</button>
+      <button type="submit" disabled={loading}>{task ? "Update Task" : "Create Task"}</button>
     </form>
   );
 };

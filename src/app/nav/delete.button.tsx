@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ConfirmationModal from "@/app/nav/confirmation.modal";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { verifyToken } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
@@ -22,6 +22,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.auth);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
@@ -48,7 +49,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
   return (
     <>
-      <button onClick={handleOpenModal}>Delete</button>
+      <button onClick={handleOpenModal} disabled={loading}>Delete</button>
 
       <ConfirmationModal
         open={isModalOpen}
