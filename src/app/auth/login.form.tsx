@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store'; 
 import { login } from '@/redux/thunks/auth.thunks';
 import { RootState } from '@/redux/store';
-import ErrorComponent from "@/app/nav/error";
+import Error from "@/app/nav/error";
 
 type FormData = {
   username: string;
@@ -40,7 +40,7 @@ const LoginForm = () => {
   };
 
   if (error) {
-    return <ErrorComponent errorMessage={error} />;
+    return <Error errorMessage={error} />;
   }
 
   return (

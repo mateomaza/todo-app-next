@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store'; 
 import { register } from '@/redux/thunks/auth.thunks';
 import { RootState } from '@/redux/store';
-import ErrorComponent from "../nav/error";
+import Error from "@/app/nav/error";
 
 type FormData = {
   username: string;
@@ -42,7 +42,7 @@ const RegisterForm = () => {
   };
 
   if (error) {
-    return <ErrorComponent errorMessage={error} />;
+    return <Error errorMessage={error} />;
   }
 
   return (

@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { verifyToken } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
-import ErrorComponent from "./error";
+import Error from "./error";
 
 interface DeleteButtonProps {
   onDelete: () => void;
@@ -44,7 +44,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   };
 
   if (errorMessage) {
-    return <ErrorComponent errorMessage={errorMessage} />;
+    return <Error errorMessage={errorMessage} />;
   }
 
   return (

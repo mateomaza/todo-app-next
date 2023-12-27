@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DeleteButton from "@/app/nav/delete.button";
 import { deleteUser } from "@/services/user.service";
-import ErrorComponent from "@/app/nav/error";
+import Error from "@/app/nav/error";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetAuthState } from '@/redux/slices/auth.slice';
@@ -22,7 +22,7 @@ const UserDelete = (id: string) => {
   };
 
   if (errorMessage) {
-    return <ErrorComponent errorMessage={errorMessage} />;
+    return <Error errorMessage={errorMessage} />;
   }
 
   return (

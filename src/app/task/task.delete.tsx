@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DeleteButton from "@/app/nav/delete.button";
 import { TaskType, deleteTask, fetchTasks } from "@/services/task.service";
 import axios from "axios";
-import ErrorComponent from "../nav/error";
+import Error from "@/app/nav/error";
 
 interface TaskDeleteProps {
   id: string;
@@ -39,7 +39,7 @@ const TaskDelete: React.FC<TaskDeleteProps> = ({ id, setTasks }) => {
   };
 
   if (errorMessage) {
-    return <ErrorComponent errorMessage={errorMessage} />;
+    return <Error errorMessage={errorMessage} />;
   }
 
   return (

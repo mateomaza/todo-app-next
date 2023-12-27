@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
+import Alert from "@mui/material/Alert";
 
-const ErrorComponent: React.FC<{ errorMessage: string }> = ({ errorMessage }) => {
-  return (
-    <div>
-      <h1>Error</h1>
-      <p>{errorMessage}</p>
-    </div>
-  );
+type ErrorProps = {
+  errorMessage: string;
 };
 
-export default ErrorComponent;
+const Error: React.FC<ErrorProps> = ({errorMessage}) => {
+  return <Alert severity="error">{errorMessage}</Alert>;
+};
+
+export default Error;
