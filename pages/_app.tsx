@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { AppProps } from "next/app";
-import { logout, refresh } from "@/redux/thunks/auth.thunks";
+import { logout, refresh, verifyToken } from "@/redux/thunks/auth.thunks";
 import { useRouter } from "next/router";
 
 let inactivityTimer: NodeJS.Timeout | number;
@@ -33,6 +33,22 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
           router.push("/auth/login-page");
         });
     }
+  }, [router]);
+
+  useEffect(() => {
+    const verifySession = () => {
+      const access_token = store.getState().auth.token;
+      if (access_token) {
+        store
+          .dispatch(verifyToken())
+          .catch(() => {
+            router.push("/auth/login-page");
+          });
+      }
+    };
+    verifySession();
+    const interval = setInterval(verifySession, 13 * 60 * 1000);
+    return () => clearInterval(interval);
   }, [router]);
 
   useEffect(() => {
