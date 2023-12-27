@@ -9,6 +9,7 @@ const initialState: AuthState = {
   token: null,
   loading: false,
   error: null,
+  isLoggingOut: false,
 };
 
 const authSlice = createSlice({
@@ -79,6 +80,7 @@ const authSlice = createSlice({
     builder
       .addCase(logout.pending, (state) => {
         state.loading = true;
+        state.isLoggingOut = true;
       })
       .addCase(logout.fulfilled, (state) => {
         state.isAuthenticated = false;
@@ -86,10 +88,12 @@ const authSlice = createSlice({
         state.token = null;
         state.loading = false;
         state.error = null;
+        state.isLoggingOut = false;
       })
       .addCase(logout.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
         state.error = getErrorMessage(action.payload);
+        state.isLoggingOut = false;
       });
   },
 });
