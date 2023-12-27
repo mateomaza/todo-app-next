@@ -92,9 +92,7 @@ const TaskForm = ({
     try {
       const actionResult = await dispatch(verifyToken());
       const verificationResult = actionResult.payload as VerifyResponse;
-      const isVerified = verificationResult.verified
-
-      if (verificationResult && isVerified) {
+      if (verificationResult?.verified) {
         if (task) {
           await updateTask(task.id, {
             ...taskData,
@@ -105,7 +103,7 @@ const TaskForm = ({
         }
         refreshTasks();
       }
-      if (!verificationResult || !isVerified) {
+      if (!verificationResult?.verified) {
         setErrorMessage("Session verification failed. Please log in again.");
         router.push("/auth/login-page");
       }
