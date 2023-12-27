@@ -27,6 +27,7 @@ const HomePage = () => {
 
   return (
     <>
+      <LogoutButton />
       <h1>Tasks</h1>
       <Button variant="outlined" onClick={handleOpen}>
         Create a New Task

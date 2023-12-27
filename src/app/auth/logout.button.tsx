@@ -1,21 +1,29 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { BounceLoader } from "react-spinners";
+import { logout } from "@/redux/thunks/auth.thunks";
+import { AppDispatch, RootState } from '@/redux/store';
+import { useRouter } from "next/router";
 
 export default function LogoutButton() {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      localStorage.removeItem("token");
-      window.location.href = "/auth/login-page";
-    }, 2000);
-  }, []);
+  const handleLogout = () => {
+    dispatch(logout()).then(() => {
+      router.push("/auth/login-page");
+    });
+  };
 
   return (
     <div>
-      <h1>Logging Out...</h1>
-      <BounceLoader color="#007BFF" loading={loading} size={60} />
+      {loading ? (
+        <BounceLoader color="#007BFF" loading={loading} size={60} />
+      ) : (
+        <button onClick={handleLogout}>Logout</button>
+      )}
+      <h1>{loading ? 'Logging Out...' : 'Click to Logout'}</h1>
     </div>
   );
 }
