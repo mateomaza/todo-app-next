@@ -18,9 +18,9 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
-  const access_token = store.getState().auth.token;
 
   useEffect(() => {
+    const access_token = store.getState().auth.token;
     if (!access_token) {
       store
         .dispatch(refresh())
@@ -33,6 +33,9 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
           router.push("/auth/login-page");
         });
     }
+  }, [router]);
+
+  useEffect(() => {
     const handleActivity = () => resetInactivityTimer();
     document.addEventListener("mousemove", handleActivity);
     document.addEventListener("keypress", handleActivity);
@@ -42,7 +45,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
       document.removeEventListener("keypress", handleActivity);
       clearTimeout(inactivityTimer);
     };
-  }, [access_token, router]);
+  }, []);
 
   return (
     <Provider store={store}>
