@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import DeleteButton from "@/app/nav/delete.button";
 import { deleteUser } from "@/services/user.service";
 import ErrorComponent from "@/app/nav/error";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { resetAuthState } from '@/redux/slices/auth.slice';
 
 const UserDelete = (id: string) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleUserDeletion = async () => {
     setErrorMessage("");
     try {
       await deleteUser(id);
+      dispatch(resetAuthState());
     } catch (error) {
       const err = error as { message?: string };
       setErrorMessage(err.message || "An error occurred during task deletion.");
