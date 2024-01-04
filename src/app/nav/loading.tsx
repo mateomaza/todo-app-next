@@ -1,7 +1,20 @@
 import React from "react";
+import { BounceLoader } from "react-spinners";
 
-const Loading = () => {
-  return <div>Loading.....</div>;
+interface LoadingProps {
+  loading: boolean;
+  size?: number;
+  color?: string;
+}
+
+const Loading: React.FC<LoadingProps> = ({
+  loading,
+  size = 60,
+  color = "#007BFF",
+}) => {
+  if (!loading) return null;
+
+  return <BounceLoader color={color} loading={loading} size={size} />;
 };
 
 export default Loading;
