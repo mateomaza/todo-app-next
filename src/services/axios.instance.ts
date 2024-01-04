@@ -30,11 +30,11 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        Router.push('/auth/login-page');
+        Router.push('/auth/login');
         return Promise.reject(refreshError);
       }
     }
-    Router.push('/auth/login-page');
+    Router.push('/auth/login');
     return Promise.reject(error);
   }
 );

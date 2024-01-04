@@ -36,7 +36,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
         handleCloseModal();
       } else {
         setErrorMessage("Session verification failed. Please log in again.");
-        router.push("/auth/login-page");
+        router.push("/auth/login");
       }
     } catch (error) {
       setErrorMessage("An error occurred during verification.");

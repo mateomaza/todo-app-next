@@ -26,11 +26,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         .dispatch(refresh())
         .then((result) => {
           if (!result.payload) {
-            router.push("/auth/login-page");
+            router.push("/auth/login");
           }
         })
         .catch(() => {
-          router.push("/auth/login-page");
+          router.push("/auth/login");
         });
     }
   }, [router]);
@@ -42,7 +42,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         store
           .dispatch(verifyToken())
           .catch(() => {
-            router.push("/auth/login-page");
+            router.push("/auth/login");
           });
       }
     };

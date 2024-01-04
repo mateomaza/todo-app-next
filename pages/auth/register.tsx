@@ -8,7 +8,7 @@ export default function Register() {
       <RegisterForm />
       <p>
         Already got an account?{" "}
-        <Link href="/auth/login-page">Click here to login</Link>
+        <Link href="/auth/login">Click here to login</Link>
       </p>
     </div>
   );

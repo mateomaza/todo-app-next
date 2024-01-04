@@ -108,12 +108,12 @@ const TaskForm = ({
       }
       if (!verificationResult?.verified) {
         setErrorMessage("Session verification failed. Please log in again.");
-        router.push("/auth/login-page");
+        router.push("/auth/login");
       }
     } catch (error) {
       const err = error as { message?: string };
       setErrorMessage(err.message || "An error occurred during verification.");
-      router.push("/auth/login-page");
+      router.push("/auth/login");
     }
   };
 

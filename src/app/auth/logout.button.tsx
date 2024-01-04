@@ -14,7 +14,7 @@ export default function LogoutButton() {
 
   const handleLogout = () => {
     dispatch(logout()).then(() => {
-      router.push("/auth/login-page");
+      router.push("/auth/login");
     });
   };
 
