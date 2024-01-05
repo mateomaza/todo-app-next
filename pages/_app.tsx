@@ -39,11 +39,9 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     const verifySession = () => {
       const access_token = store.getState().auth.token;
       if (access_token) {
-        store
-          .dispatch(verifyToken())
-          .catch(() => {
-            router.push("/auth/login");
-          });
+        store.dispatch(verifyToken()).catch(() => {
+          router.push("/auth/login");
+        });
       }
     };
     verifySession();
@@ -61,6 +59,12 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
       document.removeEventListener("keypress", handleActivity);
       clearTimeout(inactivityTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Cypress) {
+      window.store = store;
+    }
   }, []);
 
   return (
