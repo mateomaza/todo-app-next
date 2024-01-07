@@ -7,7 +7,7 @@ export const login = createAsyncThunk(
   "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/api/auth/login", credentials);
+      const response = await axiosInstance.post("/auth/login", credentials);
       const access_token = response.data.access_token;
       setupTokenRefresh(access_token);
       return {
@@ -24,7 +24,7 @@ export const register = createAsyncThunk(
   "auth/register",
   async (userData: RegistrationData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/api/auth/register", userData);
+      const response = await axiosInstance.post("/auth/register", userData);
       const access_token = response.data.access_token;
       setupTokenRefresh(access_token);
       return {
@@ -42,7 +42,7 @@ export const refresh = createAsyncThunk(
   "auth/refresh",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/api/auth/refresh");
+      const response = await axiosInstance.post("/auth/refresh");
       const access_token = response.data.access_token;
       setupTokenRefresh(access_token);
       return { access_token: access_token };
@@ -56,7 +56,7 @@ export const verifyToken = createAsyncThunk(
   "auth/verifyToken",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/api/auth/verifyToken");
+      const response = await axiosInstance.get("/auth/verifyToken");
       return {
         verified: response.data.verified,
         username: response.data.username,
@@ -72,7 +72,7 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.post("/api/auth/logout");
+      await axiosInstance.post("/auth/logout");
       return true;
     } catch (error) {
       return rejectWithValue(handleError(error));
