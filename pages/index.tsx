@@ -7,6 +7,7 @@ import TaskModal from "@/app/task/task.modal";
 import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
+import PrivateRoute from "@/services/private.route";
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -26,7 +27,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <>
+    <PrivateRoute>
       <LogoutButton />
       <h1>Tasks</h1>
       <Button variant="outlined" onClick={handleOpen}>
@@ -36,7 +37,7 @@ const HomePage = () => {
         <TaskForm setTasks={setTasks} />
       </TaskModal>
       <TaskList tasks={tasks} setTasks={setTasks} />
-    </>
+    </PrivateRoute>
   );
 };
 
