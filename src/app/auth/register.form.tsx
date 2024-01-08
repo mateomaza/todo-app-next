@@ -20,7 +20,7 @@ const RegisterForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error, hasAttemptedRefresh } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated && !error) {
@@ -41,7 +41,7 @@ const RegisterForm = () => {
     dispatch(register(registerData));
   };
 
-  if (error) {
+  if (error && !hasAttemptedRefresh) {
     return <Error errorMessage={error} />;
   }
 

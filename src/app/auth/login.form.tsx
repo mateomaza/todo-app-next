@@ -18,7 +18,7 @@ const LoginForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error, hasAttemptedRefresh } = useSelector((state: RootState) => state.auth);
   
   useEffect(() => {
     if (isAuthenticated && !error) {
@@ -39,7 +39,7 @@ const LoginForm = () => {
     dispatch(login(loginData));
   };
 
-  if (error) {
+  if (error && !hasAttemptedRefresh) {
     return <Error errorMessage={error} />;
   }
 

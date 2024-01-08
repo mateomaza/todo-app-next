@@ -35,6 +35,7 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
         state.error = getErrorMessage(action.payload);
+        state.hasAttemptedRefresh = false;
       })
       .addCase(register.pending, (state) => {
         state.loading = true;
@@ -45,10 +46,12 @@ const authSlice = createSlice({
         state.token = action.payload.access_token;
         state.loading = false;
         state.error = null;
+        state.hasAttemptedRefresh = false
       })
       .addCase(register.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
         state.error = getErrorMessage(action.payload);
+        state.hasAttemptedRefresh = false;
       })
 
       builder
