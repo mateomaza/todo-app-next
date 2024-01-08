@@ -20,20 +20,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const access_token = store.getState().auth.token;
-    if (!access_token) {
-      store
-        .dispatch(refresh())
-        .then((result) => {
-          if (!result.payload) {
-            router.push("/auth/login");
-          }
-        })
-        .catch(() => {
-          router.push("/auth/login");
-        });
+    const { token, hasAttemptedRefresh } = store.getState().auth;
+    if (!token && !hasAttemptedRefresh) {
+      store.dispatch(refresh());
     }
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     const verifySession = () => {

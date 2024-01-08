@@ -9,6 +9,7 @@ const initialState: AuthState = {
   token: null,
   loading: false,
   error: null,
+  hasAttemptedRefresh: false,
   isLoggingOut: false,
 };
 
@@ -29,6 +30,7 @@ const authSlice = createSlice({
         state.token = action.payload.access_token;
         state.loading = false;
         state.error = null;
+        state.hasAttemptedRefresh = false;
       })
       .addCase(login.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
@@ -52,11 +54,13 @@ const authSlice = createSlice({
       builder
       .addCase(refresh.pending, (state) => {
         state.loading = true;
+        state.hasAttemptedRefresh = true;
       })
       .addCase(refresh.fulfilled, (state, action: PayloadAction<RefreshResponse>) => {
         state.token = action.payload.access_token;
         state.loading = false;
         state.error = null;
+        state.hasAttemptedRefresh = false;
       })
       .addCase(refresh.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
@@ -89,6 +93,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.isLoggingOut = false;
+        state.hasAttemptedRefresh = false;
       })
       .addCase(logout.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
