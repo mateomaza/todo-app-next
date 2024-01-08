@@ -89,14 +89,8 @@ const authSlice = createSlice({
         state.loading = true;
         state.isLoggingOut = true;
       })
-      .addCase(logout.fulfilled, (state) => {
-        state.isAuthenticated = false;
-        state.user = null;
-        state.token = null;
-        state.loading = false;
-        state.error = null;
-        state.isLoggingOut = false;
-        state.hasAttemptedRefresh = false;
+      .addCase(logout.fulfilled, () => {
+        return authSlice.caseReducers.resetAuthState();
       })
       .addCase(logout.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
         state.loading = false;
