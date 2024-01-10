@@ -8,23 +8,29 @@ import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
+
+  const { token, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
     const getTasks = async () => {
       const response = await fetchTasks();
       setTasks(response);
     };
-    getTasks();
-    setLoading(false);
-  }, []);
+    if (token && isAuthenticated) {
+      getTasks();
+    }
+  }, [token, isAuthenticated]);
 
   return (
     <PrivateRoute>
