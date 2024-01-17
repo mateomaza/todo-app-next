@@ -18,13 +18,13 @@ const LoginForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error, hasAttemptedRefresh } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error, errorFromInitialRefresh } = useSelector((state: RootState) => state.auth);
   
   useEffect(() => {
-    if (isAuthenticated && !error) {
+    if (isAuthenticated && (!error || errorFromInitialRefresh)) {
       router.push("/");
     }
-  }, [isAuthenticated, error, router]);
+  }, [isAuthenticated, error, router, errorFromInitialRefresh]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +39,7 @@ const LoginForm = () => {
     dispatch(login(loginData));
   };
 
-  if (error && !hasAttemptedRefresh) {
+  if (error && !errorFromInitialRefresh) {
     return <Error errorMessage={error} />;
   }
 
@@ -61,7 +61,7 @@ const LoginForm = () => {
         name="password"
         required
       />
-      <button type="submit" disabled={loading}>Login</button>
+      <button type="submit" disabled={loading} data-testid="login-button">Login</button>
     </form>
   );
 };

@@ -2,7 +2,6 @@ interface User {
   id: string;
   username: string;
   email: string;
-  createdAt: Date;
 }
 
 export interface AuthState {
@@ -31,12 +30,16 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface CheckRefreshResponse {
+  verified: boolean;
+  user: User;
+}
+
 export interface RefreshResponse {
-  access_token: string;
+  access_token: string | null 
 }
 
 export interface VerifyResponse {
-  username: string;
   verified: boolean;
 }
 

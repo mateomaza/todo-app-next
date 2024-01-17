@@ -71,7 +71,7 @@ const RegisterForm = () => {
         name="password"
         required
       />
-      <button type="submit" disabled={loading}>Register</button>
+      <button type="submit" disabled={loading} data-testid="register-button">Register</button>
     </form>
   );
 };

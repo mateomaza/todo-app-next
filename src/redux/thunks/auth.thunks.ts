@@ -38,25 +38,41 @@ export const register = createAsyncThunk(
   }
 );
 
-export const refresh = createAsyncThunk(
-  "auth/refresh",
+export const checkRefreshToken = createAsyncThunk(
+  "auth/check-refresh",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/auth/refresh");
-      const access_token = response.data.access_token;
-      setupTokenRefresh(access_token);
-      return { access_token: access_token };
+      const response = await axiosInstance.post("/auth/check-refresh");
+      return response.data;
     } catch (error) {
       return rejectWithValue(handleError(error));
     }
   }
 );
 
-export const verifyToken = createAsyncThunk(
-  "auth/verifyToken",
+export const refreshToken = createAsyncThunk(
+  "auth/refresh",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/auth/verifyToken");
+      const result = await dispatch(checkRefreshToken());
+      if (result.payload.verified) {
+        const user = result.payload.user;
+        const response = await axiosInstance.post("/auth/refresh", { user });
+        const access_token = response.data.access_token;
+        setupTokenRefresh(access_token);
+        return { access_token: access_token };
+      }
+    } catch (error) {
+      return rejectWithValue(handleError(error));
+    }
+  }
+);
+
+export const verifySession = createAsyncThunk(
+  "auth/verify-session",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/auth/verify-session");
       return {
         verified: response.data.verified,
         username: response.data.username,

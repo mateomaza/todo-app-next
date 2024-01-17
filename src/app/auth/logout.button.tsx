@@ -26,7 +26,7 @@ export default function LogoutButton() {
           <h1>Logging Out...</h1>
         </>
       ) : (
-        <button onClick={handleLogout} disabled={loading}>
+        <button onClick={handleLogout} disabled={loading} data-testid="logout-button">
           Logout
         </button>
       )}

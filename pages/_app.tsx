@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { AppProps } from "next/app";
-import { logout, refresh, verifyToken } from "@/redux/thunks/auth.thunks";
+import { logout, refreshToken, verifySession } from "@/redux/thunks/auth.thunks";
+import { parseCookies } from 'nookies';
 import { useRouter } from "next/router";
 
 let inactivityTimer: NodeJS.Timeout | number;
@@ -20,24 +21,30 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const { token, hasAttemptedRefresh } = store.getState().auth;
-    if (!token && !hasAttemptedRefresh) {
-      store.dispatch(refresh());
+    const access_token = store.getState().auth.token;
+    const cookies = parseCookies();
+    const hasRefreshToken = Boolean(cookies['refresh_token']);
+    if (!access_token && hasRefreshToken) {
+      store.dispatch(refreshToken());
     }
   }, []);
 
   useEffect(() => {
-    const verifySession = () => {
+    const verify = () => {
       const access_token = store.getState().auth.token;
       if (access_token) {
-        store.dispatch(verifyToken()).catch(() => {
+        store.dispatch(verifySession()).catch(() => {
           router.push("/auth/login");
         });
       }
     };
-    verifySession();
-    const interval = setInterval(verifySession, 13 * 60 * 1000);
-    return () => clearInterval(interval);
+    const delay = 30000;
+    const timeout = setTimeout(verify, delay);
+    const interval = setInterval(verify, 13 * 60 * 1000);
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
   }, [router]);
 
   useEffect(() => {

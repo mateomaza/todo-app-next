@@ -1,11 +1,15 @@
 import { store } from "@/redux/store";
-import { refresh } from "@/redux/thunks/auth.thunks";
+import { refreshToken } from "@/redux/thunks/auth.thunks";
 import axios, { AxiosError } from "axios";
+import { parseCookies } from 'nookies';
 import Router from "next/router";
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:3001/api",
+  withCredentials: true,
 });
+
+
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -26,10 +30,12 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      const cookies = parseCookies();
+      const refresh_token = cookies['refresh_token'];
       const { hasAttemptedRefresh } = store.getState().auth;
-      if (!hasAttemptedRefresh) {
+      if (refresh_token && !hasAttemptedRefresh) {
         try {
-          const newToken = await store.dispatch(refresh()).unwrap();
+          const newToken = await store.dispatch(refreshToken()).unwrap();
           originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
           return axiosInstance(originalRequest);
         } catch (refreshError) {
@@ -37,7 +43,9 @@ axiosInstance.interceptors.response.use(
           return Promise.reject(refreshError);
         }
       }
-      Router.push("/auth/login");
+      else {
+        Router.push("/auth/login");
+      }
     }
     return Promise.reject(error);
   }

@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Switch from "@mui/material/Switch";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { verifyToken } from "@/redux/thunks/auth.thunks";
+import { verifySession } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
 import { useSelector } from 'react-redux';
@@ -93,7 +93,7 @@ const TaskForm = ({
     e.preventDefault();
     setErrorMessage("");
     try {
-      const actionResult = await dispatch(verifyToken());
+      const actionResult = await dispatch(verifySession());
       const verificationResult = actionResult.payload as VerifyResponse;
       if (verificationResult?.verified) {
         if (task) {
