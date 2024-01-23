@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance, handleError } from "@/services/axios.instance";
 import { LoginCredentials, RegistrationData } from "../types/auth.types";
 import { setupTokenRefresh } from "@/services/auth.service";
+import { useRouter } from 'next/router';
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -63,6 +64,7 @@ export const refreshToken = createAsyncThunk(
         return { access_token: access_token };
       }
     } catch (error) {
+      dispatch(logout());
       return rejectWithValue(handleError(error));
     }
   }
@@ -89,7 +91,10 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axiosInstance.post("/auth/logout");
-      return true;
+      if (typeof window !== 'undefined') {
+        const router = useRouter();
+        router.push('/auth/login');
+      }
     } catch (error) {
       return rejectWithValue(handleError(error));
     }

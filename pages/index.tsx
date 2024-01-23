@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { GetServerSideProps } from "next";
+import { axiosInstance } from "@/services/axios.instance";
 import { fetchTasks } from "@/services/task.service";
 import TaskList from "@/app/task/task.list";
 import TaskForm from "@/app/task/task.form";
@@ -8,8 +10,11 @@ import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { parseCookies } from "nookies";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { RootState } from "@/redux/store";
+import { checkRefreshToken } from "@/redux/thunks/auth.thunks";
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -18,19 +23,32 @@ const HomePage = () => {
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const { token, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const access_token = useSelector((state: RootState) => state.auth.token);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const cookies = parseCookies();
+  const hasRefreshToken = Boolean(cookies["refresh_token"]);
 
   useEffect(() => {
     const getTasks = async () => {
       const response = await fetchTasks();
       setTasks(response);
     };
-    if (token && isAuthenticated) {
-      getTasks();
-    }
-  }, [token, isAuthenticated]);
+    const verifyFetch = async () => {
+      if (access_token && hasRefreshToken) {
+        try {
+          const result = await dispatch(checkRefreshToken()).unwrap();
+          if (result.verified) {
+            await getTasks();
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    };
+    verifyFetch();
+
+  }, [access_token, dispatch, hasRefreshToken]);
 
   return (
     <PrivateRoute>
@@ -45,6 +63,31 @@ const HomePage = () => {
       <TaskList tasks={tasks} setTasks={setTasks} />
     </PrivateRoute>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { refresh_token } = context.req.cookies;
+
+  if (!refresh_token) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    await axiosInstance.post("/auth/refresh-token");
+    return { props: {} };
+  } catch (error) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
 };
 
 export default HomePage;

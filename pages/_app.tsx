@@ -33,12 +33,10 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     const verify = () => {
       const access_token = store.getState().auth.token;
       if (access_token) {
-        store.dispatch(verifySession()).catch(() => {
-          router.push("/auth/login");
-        });
+        store.dispatch(verifySession())
       }
     };
-    const delay = 30000;
+    const delay = 420;
     const timeout = setTimeout(verify, delay);
     const interval = setInterval(verify, 13 * 60 * 1000);
     return () => {

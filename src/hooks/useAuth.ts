@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
-import { useSelector } from 'react-redux'
-import { RootState } from '@/redux/store';
+import { parseCookies } from 'nookies';
 
 const useAuth = () => {
   const [loading, setLoading] = useState(true);
-  const authenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    if (authenticated !== null) {
+    const checkAuth = () => {
+      const cookies = parseCookies();
+      const refreshToken = cookies['refresh_token'];
+      if (refreshToken) {
+        setAuthenticated(true);
+      } else {
+        setAuthenticated(false);
+      }
       setLoading(false);
-    }
-  }, [authenticated]);
+    };
+
+    checkAuth();
+  }, []);
 
   return { loading, authenticated };
 };

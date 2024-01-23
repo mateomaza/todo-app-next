@@ -17,7 +17,7 @@ const UserDelete = (id: string) => {
       dispatch(resetAuthState());
     } catch (error) {
       const err = error as { message?: string };
-      setErrorMessage(err.message || "An error occurred during task deletion.");
+      setErrorMessage(err.message || "An error occurred during user deletion.");
     }
   };
 

@@ -5,6 +5,7 @@ import { AppDispatch } from '@/redux/store';
 import { register } from '@/redux/thunks/auth.thunks';
 import { RootState } from '@/redux/store';
 import Error from "@/app/nav/error";
+import { parseCookies } from "nookies";
 
 type FormData = {
   username: string;
@@ -20,13 +21,13 @@ const RegisterForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error, hasAttemptedRefresh } = useSelector((state: RootState) => state.auth);
+  const { token, loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated && !error) {
+    if (token && !error) {
       router.push("/");
     }
-  }, [isAuthenticated, error, router]);
+  }, [token, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,7 +42,7 @@ const RegisterForm = () => {
     dispatch(register(registerData));
   };
 
-  if (error && !hasAttemptedRefresh) {
+  if (error) {
     return <Error errorMessage={error} />;
   }
 
