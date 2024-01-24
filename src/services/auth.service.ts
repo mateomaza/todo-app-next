@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 import { store } from "@/redux/store";
 import { refreshToken } from "@/redux/thunks/auth.thunks";
 
-let refreshTimeout: NodeJS.Timeout | number;;
+let refreshTimeout: NodeJS.Timeout | number;
 
 interface DecodedJwtPayload {
   exp?: number;
@@ -14,9 +14,7 @@ const setupTokenRefresh = (access_token: string) => {
   if (decodedToken.exp) {
     const currentTime = Date.now() / 1000;
     const buffer = 1 * 60;
-    const timeUntilExpiry =
-      decodedToken.exp * 1000 - currentTime - buffer * 1000;
-
+    const timeUntilExpiry = (decodedToken.exp - currentTime - buffer) * 1000;
     if (refreshTimeout) clearTimeout(refreshTimeout);
 
     if (timeUntilExpiry > 0) {

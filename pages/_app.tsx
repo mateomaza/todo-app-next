@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { AppProps } from "next/app";
-import { logout, refreshToken, verifySession } from "@/redux/thunks/auth.thunks";
-import { parseCookies } from 'nookies';
-import { useRouter } from "next/router";
+import {
+  logout,
+  refreshToken,
+  verifySession,
+} from "@/redux/thunks/auth.thunks";
+import { parseCookies } from "nookies";
 
 let inactivityTimer: NodeJS.Timeout | number;
 
@@ -18,32 +21,38 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 };
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-  const router = useRouter();
 
   useEffect(() => {
-    const access_token = store.getState().auth.token;
-    const cookies = parseCookies();
-    const hasRefreshToken = Boolean(cookies['refresh_token']);
-    if (!access_token && hasRefreshToken) {
-      store.dispatch(refreshToken());
-    }
+    const refresh = () => {
+      const access_token = store.getState().auth.token;
+      const cookies = parseCookies();
+      const hasRefreshToken = Boolean(cookies["refresh_token"]);
+      if (!access_token && hasRefreshToken) {
+        store.dispatch(refreshToken());
+      }
+    };
+    const delay = 69;
+    const timeout = setTimeout(refresh, delay);
+    return () => {
+      clearTimeout(timeout);
+    };
   }, []);
 
   useEffect(() => {
     const verify = () => {
       const access_token = store.getState().auth.token;
       if (access_token) {
-        store.dispatch(verifySession())
+        store.dispatch(verifySession());
       }
     };
-    const delay = 420;
+    const delay = 69;
     const timeout = setTimeout(verify, delay);
     const interval = setInterval(verify, 13 * 60 * 1000);
     return () => {
       clearTimeout(timeout);
       clearInterval(interval);
     };
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     const handleActivity = () => resetInactivityTimer();

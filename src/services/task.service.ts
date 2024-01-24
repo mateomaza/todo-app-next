@@ -16,8 +16,7 @@ export const fetchTasks = async () => {
       "tasks"
     );
     return response.data || [];
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
+  } catch (err) {
     return [];
   }
 };

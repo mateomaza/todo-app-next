@@ -19,13 +19,21 @@ const LoginForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { token, loading, error, hasAttemptedRefresh } = useSelector((state: RootState) => state.auth);
+  const { token, loading, error } = useSelector((state: RootState) => state.auth);
+  const [redirectOnLogin, setRedirectOnLogin] = useState(false);
 
   useEffect(() => {
-    if (token && !error) {
+    if (token && !error && !redirectOnLogin) {
+      setRedirectOnLogin(true);
       router.push("/");
     }
-  }, [token, error, router]);
+  }, [token, error, router, redirectOnLogin]);
+
+  useEffect(() => {
+    if (!token) {
+      setRedirectOnLogin(false);
+    }
+  }, [token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,7 +48,7 @@ const LoginForm = () => {
     dispatch(login(loginData));
   };
 
-  if (error && !hasAttemptedRefresh) {
+  if (error) {
     return <Error errorMessage={error} />;
   }
 
