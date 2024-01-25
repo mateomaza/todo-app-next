@@ -32,8 +32,8 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       const cookies = parseCookies();
       const refresh_token = cookies['refresh_token'];
-      const { hasAttemptedRefresh } = store.getState().auth;
-      if (refresh_token && !hasAttemptedRefresh) {
+      const { isRefreshing } = store.getState().auth;
+      if (refresh_token && !isRefreshing) {
         try {
           const newToken = await store.dispatch(refreshToken()).unwrap();
           originalRequest.headers["Authorization"] = `Bearer ${newToken}`;

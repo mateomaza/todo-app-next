@@ -18,11 +18,12 @@ import {
 import { getErrorMessage } from "./utilities";
 
 const initialState: AuthState = {
+  isAuthenticated: false,
   user: null,
   token: null,
   loading: false,
   error: null,
-  hasAttemptedRefresh: false,
+  isRefreshing: false,
   isLoggingOut: false,
 };
 
@@ -40,19 +41,19 @@ const authSlice = createSlice({
       .addCase(
         login.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
+          state.isAuthenticated = true;
           state.user = action.payload.user;
           state.token = action.payload.access_token;
           state.loading = false;
           state.error = null;
-          state.hasAttemptedRefresh = false;
         }
       )
       .addCase(
         login.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
+          state.isAuthenticated = false;
           state.loading = false;
           state.error = getErrorMessage(action.payload);
-          state.hasAttemptedRefresh = false;
         }
       )
       .addCase(register.pending, (state) => {
@@ -61,19 +62,19 @@ const authSlice = createSlice({
       .addCase(
         register.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
+          state.isAuthenticated = true;
           state.user = action.payload.user;
           state.token = action.payload.access_token;
           state.loading = false;
           state.error = null;
-          state.hasAttemptedRefresh = false;
         }
       )
       .addCase(
         register.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
+          state.isAuthenticated = false;
           state.loading = false;
           state.error = getErrorMessage(action.payload);
-          state.hasAttemptedRefresh = false;
         }
       );
 
@@ -87,24 +88,30 @@ const authSlice = createSlice({
           state.loading = false;
         }
       )
-      .addCase(checkRefreshToken.rejected, (state, action: PayloadAction<AuthError | unknown>) => {
-        state.loading = false;
-        state.error = getErrorMessage(action.payload);
-      });
+      .addCase(
+        checkRefreshToken.rejected,
+        (state, action: PayloadAction<AuthError | unknown>) => {
+          state.isAuthenticated = false;
+          state.loading = false;
+          state.error = getErrorMessage(action.payload);
+        }
+      );
 
     builder
       .addCase(refreshToken.pending, (state) => {
         state.loading = true;
-        state.hasAttemptedRefresh = true;
+        state.isRefreshing = true;
       })
       .addCase(
         refreshToken.fulfilled,
         (state, action: PayloadAction<RefreshResponse | undefined>) => {
           if (action.payload) {
+            state.isAuthenticated = true;
+            state.user = action.payload.user;
             state.token = action.payload.access_token;
             state.loading = false;
             state.error = null;
-            state.hasAttemptedRefresh = false;
+            state.isRefreshing = false;
           } else {
             state.loading = false;
             state.error = "Refresh token response is undefined";
@@ -114,6 +121,7 @@ const authSlice = createSlice({
       .addCase(
         refreshToken.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
+          state.isAuthenticated = false;
           state.loading = false;
           state.error = getErrorMessage(action.payload);
         }
@@ -133,6 +141,7 @@ const authSlice = createSlice({
       .addCase(
         verifySession.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
+          state.isAuthenticated = false;
           state.loading = false;
           state.error = getErrorMessage(action.payload);
         }
@@ -143,8 +152,14 @@ const authSlice = createSlice({
         state.loading = true;
         state.isLoggingOut = true;
       })
-      .addCase(logout.fulfilled, () => {
-        return authSlice.caseReducers.resetAuthState();
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+        state.token = null;
+        state.loading = false;
+        state.error = null;
+        state.isLoggingOut = false;
+        state.isRefreshing = false;
       })
       .addCase(
         logout.rejected,

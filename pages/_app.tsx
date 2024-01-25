@@ -21,28 +21,23 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 };
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-
   useEffect(() => {
-    const refresh = () => {
-      const access_token = store.getState().auth.token;
-      const cookies = parseCookies();
-      const hasRefreshToken = Boolean(cookies["refresh_token"]);
-      if (!access_token && hasRefreshToken) {
-        store.dispatch(refreshToken());
-      }
-    };
-    const delay = 69;
-    const timeout = setTimeout(refresh, delay);
-    return () => {
-      clearTimeout(timeout);
-    };
+    const { token, error } = store.getState().auth;
+    const cookies = parseCookies();
+    const hasRefreshToken = Boolean(cookies["refresh_token"]);
+    if (!token && !error && hasRefreshToken) {
+      console.log('triggered refresh thunk')
+      store.dispatch(refreshToken());
+    }
   }, []);
 
   useEffect(() => {
     const verify = () => {
-      const access_token = store.getState().auth.token;
-      if (access_token) {
-        store.dispatch(verifySession());
+      const { token, error } = store.getState().auth;
+      if (token && !error) {
+        console.log('triggered verify thunk')
+        const response = store.dispatch(verifySession());
+        console.log(response);
       }
     };
     const delay = 69;

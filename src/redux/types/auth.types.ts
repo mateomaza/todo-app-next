@@ -5,11 +5,12 @@ interface User {
 }
 
 export interface AuthState {
+  isAuthenticated: boolean;
   user: User | null;
   token: string | null;
   loading: boolean;
   error: string | null;
-  hasAttemptedRefresh: boolean;
+  isRefreshing: boolean;
   isLoggingOut: boolean;
 }
 
@@ -31,11 +32,11 @@ export interface AuthResponse {
 
 export interface CheckRefreshResponse {
   verified: boolean;
-  user: User;
 }
 
 export interface RefreshResponse {
-  access_token: string | null 
+  access_token: string;
+  user: User;
 }
 
 export interface VerifyResponse {

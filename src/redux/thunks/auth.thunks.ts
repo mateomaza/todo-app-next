@@ -57,11 +57,10 @@ export const refreshToken = createAsyncThunk(
     try {
       const result = await dispatch(checkRefreshToken());
       if (result.payload.verified) {
-        const user = result.payload.user;
-        const response = await axiosInstance.post("/auth/refresh", { user });
+        const response = await axiosInstance.post("/auth/refresh");
         const access_token = response.data.access_token;
         setupTokenRefresh(access_token);
-        return { access_token: access_token };
+        return { access_token: access_token, user: response.data.user};
       }
     } catch (error) {
       dispatch(logout());
@@ -92,6 +91,7 @@ export const logout = createAsyncThunk(
     try {
       await axiosInstance.post("/auth/logout");
       if (typeof window !== 'undefined') {
+        console.log('should redirect after this.')
         const router = useRouter();
         router.push('/auth/login');
       }

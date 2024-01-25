@@ -2,18 +2,20 @@ import React, { useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import Loading from "@/app/nav/loading";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { loading, authenticated } = useAuth();
+  const { isAuthenticated, isRefreshing, loading, error } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!isAuthenticated && !isRefreshing) {
       router.push("/auth/login");
     }
-  }, [authenticated, router]);
+  }, [isAuthenticated, isRefreshing, router]);
 
-  if (!authenticated) return null;
+  if (!isAuthenticated && !isRefreshing) return null;
 
   if (loading) {
     return <Loading loading={loading} />;

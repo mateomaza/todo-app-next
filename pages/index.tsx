@@ -10,7 +10,8 @@ import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
-import { parseCookies } from "nookies";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const HomePage = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -19,18 +20,22 @@ const HomePage = () => {
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
+  const state = useSelector((state) => state);
+  console.log(state);
+
+  const { isAuthenticated, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   useEffect(() => {
-    const cookies = parseCookies();
-    const hasRefreshToken = Boolean(cookies["refresh_token"]);
-    if (hasRefreshToken) {
-      const getTasks = async () => {
-        const response = await fetchTasks();
-        console.log(response)
-        setTasks(response);
-      };
+    const getTasks = async () => {
+      const response = await fetchTasks();
+      setTasks(response);
+    };
+    if (isAuthenticated && !error) {
       getTasks();
     }
-  }, []);
+  }, [isAuthenticated, error]);
 
   return (
     <PrivateRoute>

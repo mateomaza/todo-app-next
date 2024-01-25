@@ -11,7 +11,8 @@ export default function LogoutButton() {
   );
 
   const handleLogout = () => {
-    dispatch(logout());
+    const response = dispatch(logout());
+    console.log(response)
   };
 
   return (

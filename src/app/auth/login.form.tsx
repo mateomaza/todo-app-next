@@ -19,21 +19,13 @@ const LoginForm = () => {
   });
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { token, loading, error } = useSelector((state: RootState) => state.auth);
-  const [redirectOnLogin, setRedirectOnLogin] = useState(false);
+  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (token && !error && !redirectOnLogin) {
-      setRedirectOnLogin(true);
+    if (isAuthenticated && !error) {
       router.push("/");
     }
-  }, [token, error, router, redirectOnLogin]);
-
-  useEffect(() => {
-    if (!token) {
-      setRedirectOnLogin(false);
-    }
-  }, [token]);
+  }, [isAuthenticated, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
