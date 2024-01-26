@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance, handleError } from "@/services/axios.instance";
 import { LoginCredentials, RegistrationData } from "../types/auth.types";
 import { setupTokenRefresh } from "@/services/auth.service";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -11,6 +11,11 @@ export const login = createAsyncThunk(
       const response = await axiosInstance.post("/auth/login", credentials);
       const access_token = response.data.access_token;
       setupTokenRefresh(access_token);
+      await fetch("/api/create-session", {
+        method: "POST",
+        body: JSON.stringify({ username: response.data.user.username }),
+        headers: { "Content-Type": "application/json" },
+      });
       return {
         access_token: access_token,
         user: response.data.user,
@@ -28,6 +33,11 @@ export const register = createAsyncThunk(
       const response = await axiosInstance.post("/auth/register", userData);
       const access_token = response.data.access_token;
       setupTokenRefresh(access_token);
+      await fetch("/api/create-session", {
+        method: "POST",
+        body: JSON.stringify({ username: response.data.user.username }),
+        headers: { "Content-Type": "application/json" },
+      });
       return {
         message: response.data.message,
         user: response.data.user,
@@ -60,7 +70,7 @@ export const refreshToken = createAsyncThunk(
         const response = await axiosInstance.post("/auth/refresh");
         const access_token = response.data.access_token;
         setupTokenRefresh(access_token);
-        return { access_token: access_token, user: response.data.user};
+        return { access_token: access_token, user: response.data.user };
       }
     } catch (error) {
       dispatch(logout());
@@ -90,10 +100,10 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axiosInstance.post("/auth/logout");
-      if (typeof window !== 'undefined') {
-        console.log('should redirect after this.')
+      if (typeof window !== "undefined") {
+        console.log("should redirect after this.");
         const router = useRouter();
-        router.push('/auth/login');
+        router.push("/auth/login");
       }
     } catch (error) {
       return rejectWithValue(handleError(error));

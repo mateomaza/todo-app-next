@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { axiosInstance } from "@/services/axios.instance";
 import { fetchTasks } from "@/services/task.service";
 import TaskList from "@/app/task/task.list";
@@ -12,8 +12,35 @@ import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { getIronSession } from "iron-session";
+import { sessionOptions } from "config/session.config";
+import { UserSession } from "types/auth.types";
 
-const HomePage = () => {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getIronSession<UserSession>(
+    context.req,
+    context.res,
+    sessionOptions
+  );
+  if (session.user) {
+    return {
+      props: { session: session },
+    };
+  } else {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+}
+
+type HomePageProps = {
+  session: UserSession;
+};
+
+const HomePage: React.FC<HomePageProps> = ({ session }) => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -23,7 +50,7 @@ const HomePage = () => {
   const state = useSelector((state) => state);
   console.log(state);
 
-  const { isAuthenticated, error } = useSelector(
+  const { loading, error } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -32,10 +59,10 @@ const HomePage = () => {
       const response = await fetchTasks();
       setTasks(response);
     };
-    if (isAuthenticated && !error) {
+    if (session && !loading && !error) {
       getTasks();
     }
-  }, [isAuthenticated, error]);
+  }, [session, loading, error]);
 
   return (
     <PrivateRoute>

@@ -17,15 +17,21 @@ const LoginForm = () => {
     username: "",
     password: "",
   });
+  const [validationError, setValidationError] = useState<string>('');
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated && !error) {
-      router.push("/");
-    }
-  }, [isAuthenticated, error, router]);
+    const checkSession = async () => {
+      const response = await fetch("/api/check-session");
+      const data = await response.json();
+      if (data.isAuthenticated && !loading && !error) {
+        router.push("/");
+      }
+    };
+    checkSession();
+  }, [loading, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,17 +41,30 @@ const LoginForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login(loginData));
+    const response = await fetch("/api/login-validation", {
+      method: "POST",
+      body: JSON.stringify(loginData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      dispatch(login(loginData));
+    } else {
+      const data = await response.json();
+      setValidationError(data.error);
+    }
   };
-
-  if (error) {
-    return <Error errorMessage={error} />;
-  }
 
   return (
     <form onSubmit={handleSubmit}>
+      {(error || validationError) && (
+        <Error
+          errorMessage={error || validationError}
+        />
+      )}
       <input
         type="text"
         value={loginData.username}

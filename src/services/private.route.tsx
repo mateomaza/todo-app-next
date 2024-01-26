@@ -1,27 +1,37 @@
-import React, { useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Loading from "@/app/nav/loading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isRefreshing, loading, error } = useSelector((state: RootState) => state.auth);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { isRefreshing, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (!isAuthenticated && !isRefreshing) {
+    const checkSession = async () => {
+      const response = await fetch('/api/check-session');
+      const data = await response.json();
+      setIsAuthenticated(data.isAuthenticated);
+      setLoading(false);
+    };
+
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated && !loading && isRefreshing && !error) {
       router.push("/auth/login");
     }
-  }, [isAuthenticated, isRefreshing, router]);
-
-  if (!isAuthenticated && !isRefreshing) return null;
+  }, [isAuthenticated, loading, router, isRefreshing, error]);
 
   if (loading) {
     return <Loading loading={loading} />;
   }
 
-  return children;
+  return isAuthenticated ? children : null;
 };
 
 export default PrivateRoute;

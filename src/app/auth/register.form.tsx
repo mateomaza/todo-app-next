@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store'; 
-import { register } from '@/redux/thunks/auth.thunks';
-import { RootState } from '@/redux/store';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { register } from "@/redux/thunks/auth.thunks";
+import { RootState } from "@/redux/store";
 import Error from "@/app/nav/error";
 import { parseCookies } from "nookies";
 
@@ -19,35 +19,56 @@ const RegisterForm = () => {
     password: "",
     email: "",
   });
+  const [validationError, setValidationError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { token, loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (token && !error) {
-      router.push("/");
-    }
-  }, [token, error, router]);
+    const checkSession = async () => {
+      const response = await fetch("/api/check-session");
+      const data = await response.json();
+      if (data.isAuthenticated && !loading && !error) {
+        router.push("/");
+      }
+    };
+    checkSession();
+  }, [loading, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setRegisterData(prevState => ({
+    setRegisterData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(register(registerData));
+    const modifiedRegisterData = {
+      ...registerData,
+      username: registerData.username.toLowerCase(),
+    };
+    const response = await fetch("/api/register-validation", {
+      method: "POST",
+      body: JSON.stringify(modifiedRegisterData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      dispatch(register(modifiedRegisterData));
+    } else {
+      const data = await response.json();
+      setValidationError(data.error);
+    }
   };
-
-  if (error) {
-    return <Error errorMessage={error} />;
-  }
 
   return (
     <form onSubmit={handleSubmit}>
+      {(error || validationError) && (
+        <Error errorMessage={error || validationError} />
+      )}
       <input
         type="text"
         value={registerData.username}
@@ -72,7 +93,9 @@ const RegisterForm = () => {
         name="password"
         required
       />
-      <button type="submit" disabled={loading} data-testid="register-button">Register</button>
+      <button type="submit" disabled={loading} data-testid="register-button">
+        Register
+      </button>
     </form>
   );
 };
