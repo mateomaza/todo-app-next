@@ -1,14 +1,18 @@
+import { getIronSession } from "iron-session";
+import { sessionOptions } from "config/session.config";
 import { NextApiRequest, NextApiResponse } from "next";
+import { UserSession } from "types/auth.types";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await getIronSession<UserSession>(req, res, sessionOptions);
   const { username } = req.body;
 
   if (username) {
-    req.session.user = { username };
-    await req.session.save();
+    session.user = { username };
+    await session.save();
     res.status(200).json({ message: "Session created successfully" });
   } else {
     res

@@ -25,13 +25,12 @@ export default async function handler(
     }
 
     if (
-      !/[A-Z]/.test(password) ||
-      !/[a-z]/.test(password) ||
+      !/[a-zA-Z]/.test(password) ||
       !/[0-9]/.test(password)
     ) {
       return res.status(400).json({
         error:
-          "Password must include uppercase, lowercase, and numeric characters.",
+          "Password must include alphabetic and numeric characters.",
       });
     }
 

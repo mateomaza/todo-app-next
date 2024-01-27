@@ -43,15 +43,19 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const modifiedLoginData = {
+      ...loginData,
+      username: loginData.username.toLowerCase(),
+    };
     const response = await fetch("/api/login-validation", {
       method: "POST",
-      body: JSON.stringify(loginData),
+      body: JSON.stringify(modifiedLoginData),
       headers: {
         "Content-Type": "application/json",
       },
     });
     if (response.ok) {
-      dispatch(login(loginData));
+      dispatch(login(modifiedLoginData));
     } else {
       const data = await response.json();
       setValidationError(data.error);

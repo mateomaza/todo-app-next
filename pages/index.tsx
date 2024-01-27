@@ -12,29 +12,35 @@ import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { parseCookies } from "nookies";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/auth.types";
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const session = await getIronSession<UserSession>(
-    context.req,
-    context.res,
-    sessionOptions
-  );
-  if (session.user) {
-    return {
-      props: { session: session },
-    };
-  } else {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const cookies = parseCookies(context);
+  const refresh_token = cookies["refresh_token"];
+  if (refresh_token) {
+    const session = await getIronSession<UserSession>(
+      context.req,
+      context.res,
+      sessionOptions
+    );
+    if (session.user) {
+      return {
+        props: { session: session },
+      };
+    }
   }
-}
+  return {
+    redirect: {
+      destination: "/auth/login",
+      permanent: false,
+    },
+  };
+};
 
 type HomePageProps = {
   session: UserSession;
@@ -47,10 +53,7 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const state = useSelector((state) => state);
-  console.log(state);
-
-  const { loading, error } = useSelector(
+  const { token, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -59,10 +62,10 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
       const response = await fetchTasks();
       setTasks(response);
     };
-    if (session && !loading && !error) {
+    if (session && token && !loading && !error) {
       getTasks();
     }
-  }, [session, loading, error]);
+  }, [session, token, loading, error]);
 
   return (
     <PrivateRoute>
