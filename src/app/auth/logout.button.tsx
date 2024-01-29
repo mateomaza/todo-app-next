@@ -11,8 +11,8 @@ export default function LogoutButton() {
   );
 
   const handleLogout = () => {
-    const response = dispatch(logout());
-    console.log(response)
+    fetch('/api/logout-session', { method: 'POST' });
+    dispatch(logout())
   };
 
   return (

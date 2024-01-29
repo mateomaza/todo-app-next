@@ -9,15 +9,15 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const session = await getIronSession<UserSession>(req, res, sessionOptions);
-    const { username } = req.body;
-    if (username) {
-      session.user = { username };
-      await session.save();
-      res.status(200).json({ message: "Session created successfully" });
+    if (!session.user) {
+      session.destroy();
+      res.setHeader(
+        "Set-Cookie",
+        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+      );
+      res.json({ message: "Logged out successfully" });
     } else {
-      res
-        .status(400)
-        .json({ error: "Username is required for session creation" });
+      res.status(400).json({ error: "No user found in session" });
     }
   }
 }

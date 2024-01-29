@@ -22,18 +22,13 @@ const RegisterForm = () => {
   const [validationError, setValidationError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    const checkSession = async () => {
-      const response = await fetch("/api/check-session");
-      const data = await response.json();
-      if (data.isAuthenticated && !loading && !error) {
-        router.push("/");
-      }
-    };
-    checkSession();
-  }, [loading, error, router]);
+    if (isAuthenticated && !loading && !error) {
+      router.push("/");
+    }
+  }, [isAuthenticated, loading, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

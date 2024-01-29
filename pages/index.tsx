@@ -10,12 +10,13 @@ import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { parseCookies } from "nookies";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/auth.types";
+import { refreshToken } from "@/redux/thunks/auth.thunks";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -30,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (
     );
     if (session.user) {
       return {
-        props: { session: session },
+        props: { session: session, refresh_token: refresh_token },
       };
     }
   }
@@ -44,11 +45,13 @@ export const getServerSideProps: GetServerSideProps = async (
 
 type HomePageProps = {
   session: UserSession;
+  refresh_token: string;
 };
 
-const HomePage: React.FC<HomePageProps> = ({ session }) => {
+const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -56,6 +59,13 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
   const { token, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
+
+  useEffect(() => {
+    if (refresh_token && !token && !error && !loading) {
+      console.log("triggered refresh thunk");
+      dispatch(refreshToken());
+    }
+  }, [refresh_token, token, error, loading, dispatch]);
 
   useEffect(() => {
     const getTasks = async () => {

@@ -21,22 +21,11 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 };
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-  useEffect(() => {
-    const { token, error, loading } = store.getState().auth;
-    const cookies = parseCookies();
-    const hasRefreshToken = Boolean(cookies["refresh_token"]);
-    if (!token && !error && !loading && hasRefreshToken) {
-      console.log("triggered refresh thunk");
-      store.dispatch(refreshToken());
-    }
-  }, []);
 
   useEffect(() => {
     const verify = async () => {
-      const response = await fetch("/api/check-session");
-      const data = await response.json();
       const { token, error, loading } = store.getState().auth;
-      if (data.isAuthenticated && token && !error && !loading) {
+      if (token && !error && !loading) {
         store.dispatch(verifySession());
       }
     };

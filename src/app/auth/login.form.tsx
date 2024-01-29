@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store'; 
-import { login } from '@/redux/thunks/auth.thunks';
-import { RootState } from '@/redux/store';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { login } from "@/redux/thunks/auth.thunks";
+import { RootState } from "@/redux/store";
 import Error from "@/app/nav/error";
 import { parseCookies } from "nookies";
 
@@ -17,25 +17,22 @@ const LoginForm = () => {
     username: "",
     password: "",
   });
-  const [validationError, setValidationError] = useState<string>('');
+  const [validationError, setValidationError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
-    const checkSession = async () => {
-      const response = await fetch("/api/check-session");
-      const data = await response.json();
-      if (data.isAuthenticated && !loading && !error) {
-        router.push("/");
-      }
-    };
-    checkSession();
-  }, [loading, error, router]);
+    if (isAuthenticated && !loading && !error) {
+      router.push("/");
+    }
+  }, [isAuthenticated, loading, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setLoginData(prevState => ({
+    setLoginData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -65,9 +62,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       {(error || validationError) && (
-        <Error
-          errorMessage={error || validationError}
-        />
+        <Error errorMessage={error || validationError} />
       )}
       <input
         type="text"
@@ -85,7 +80,9 @@ const LoginForm = () => {
         name="password"
         required
       />
-      <button type="submit" disabled={loading} data-testid="login-button">Login</button>
+      <button type="submit" disabled={loading} data-testid="login-button">
+        Login
+      </button>
     </form>
   );
 };
