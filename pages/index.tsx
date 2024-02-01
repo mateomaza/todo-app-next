@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { axiosInstance } from "@/services/axios.instance";
 import { fetchTasks } from "@/services/task.service";
 import TaskList from "@/app/task/task.list";
 import TaskForm from "@/app/task/task.form";
@@ -10,18 +9,17 @@ import Button from "@mui/material/Button";
 import Loading from "@/app/nav/loading";
 import LogoutButton from "@/app/auth/logout.button";
 import PrivateRoute from "@/services/private.route";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { parseCookies } from "nookies";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import nookies from "nookies";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/auth.types";
-import { refreshToken } from "@/redux/thunks/auth.thunks";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const cookies = parseCookies(context);
+  const cookies = nookies.get(context);
   const refresh_token = cookies["refresh_token"];
   if (refresh_token) {
     const session = await getIronSession<UserSession>(
@@ -51,7 +49,6 @@ type HomePageProps = {
 const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const dispatch = useDispatch<AppDispatch>();
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -60,12 +57,7 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
     (state: RootState) => state.auth
   );
 
-  useEffect(() => {
-    if (refresh_token && !token && !error && !loading) {
-      console.log("triggered refresh thunk");
-      dispatch(refreshToken());
-    }
-  }, [refresh_token, token, error, loading, dispatch]);
+  console.log(token)
 
   useEffect(() => {
     const getTasks = async () => {
@@ -76,6 +68,10 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
       getTasks();
     }
   }, [session, token, loading, error]);
+
+  if (loading) {
+    return <Loading loading={loading} />;
+  }
 
   return (
     <PrivateRoute>

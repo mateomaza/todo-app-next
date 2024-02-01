@@ -65,19 +65,14 @@ export const refreshToken = createAsyncThunk(
   "auth/refresh",
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const result = await dispatch(checkRefreshToken());
-      console.log('result from checkRefreshToken thunk', result);
-      console.log(result.payload.verified.result)
-      if (result.payload.verified.result) {
+      const check = await dispatch(checkRefreshToken());
+      if (check.payload.verified) {
         const response = await axiosInstance.post("/auth/refresh");
-        console.log('response from /auth/refresh thunk', response);
         const access_token = response.data.access_token;
-        console.log('expected new access_token', access_token);
         setupTokenRefresh(access_token);
         return { access_token: access_token, user: response.data.user };
       }
     } catch (error) {
-      console.log(error)
       return rejectWithValue(handleError(error));
     }
   }
@@ -104,10 +99,6 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axiosInstance.post("/auth/logout");
-      if (typeof window !== "undefined") {
-        const router = useRouter();
-        router.push("/auth/login");
-      }
     } catch (error) {
       return rejectWithValue(handleError(error));
     }

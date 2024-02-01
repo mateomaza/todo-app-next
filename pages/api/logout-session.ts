@@ -9,12 +9,8 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const session = await getIronSession<UserSession>(req, res, sessionOptions);
-    if (!session.user) {
+    if (session.user) {
       session.destroy();
-      res.setHeader(
-        "Set-Cookie",
-        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-      );
       res.json({ message: "Logged out successfully" });
     } else {
       res.status(400).json({ error: "No user found in session" });

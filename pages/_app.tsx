@@ -21,6 +21,15 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 };
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const cookies = parseCookies({});
+  const auth_cookie = cookies["authenticated"]; 
+
+  useEffect(() => {
+    const { token, error, loading } = store.getState().auth;
+    if (auth_cookie && !token && !error && !loading) {
+      store.dispatch(refreshToken());
+    }
+  }, [auth_cookie]);
 
   useEffect(() => {
     const verify = async () => {
