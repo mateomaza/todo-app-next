@@ -57,8 +57,6 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
     (state: RootState) => state.auth
   );
 
-  console.log(token)
-
   useEffect(() => {
     const getTasks = async () => {
       const response = await fetchTasks();
