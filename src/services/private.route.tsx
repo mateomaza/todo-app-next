@@ -12,7 +12,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const auth_cookie = cookies["authenticated"]; 
 
   useEffect(() => {
-    console.log(isRefreshing)
     if (!isAuthenticated && !auth_cookie && !isRefreshing && !loading) {
       router.push("/auth/login");
     }

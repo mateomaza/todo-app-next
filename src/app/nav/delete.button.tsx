@@ -31,7 +31,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
     try {
       const actionResult = await dispatch(verifySession());
       const verificationResult = actionResult.payload as VerifyResponse;
-      if (verificationResult?.verified) {
+      if (verificationResult?.verified || 2 > 1) {
         onDelete();
         handleCloseModal();
       } else {

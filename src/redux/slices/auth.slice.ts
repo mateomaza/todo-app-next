@@ -25,6 +25,7 @@ const initialState: AuthState = {
   error: null,
   isRefreshing: false,
   isLoggingOut: false,
+  UserObjectId: undefined,
 };
 
 const authSlice = createSlice({
@@ -46,6 +47,7 @@ const authSlice = createSlice({
           state.token = action.payload.access_token;
           state.loading = false;
           state.error = null;
+          state.UserObjectId = action.payload.user._id;
         }
       )
       .addCase(
@@ -67,6 +69,7 @@ const authSlice = createSlice({
           state.token = action.payload.access_token;
           state.loading = false;
           state.error = null;
+          state.UserObjectId = action.payload.user._id;
         }
       )
       .addCase(
@@ -112,6 +115,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = null;
             state.isRefreshing = false;
+            state.UserObjectId = action.payload.user._id;
           } else {
             state.loading = false;
             state.error = "Refresh token response is undefined";

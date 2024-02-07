@@ -6,7 +6,11 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetAuthState } from '@/redux/slices/auth.slice';
 
-const UserDelete = (id: string) => {
+interface UserDeleteProps {
+  id: string | undefined;
+};
+
+const UserDelete = ({ id }: UserDeleteProps) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
 

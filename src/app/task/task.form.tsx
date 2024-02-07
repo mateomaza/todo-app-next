@@ -49,7 +49,7 @@ const TaskForm = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state: RootState) => state.auth);
+  const { UserObjectId, loading } = useSelector((state: RootState) => state.auth);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -92,17 +92,24 @@ const TaskForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    if (!UserObjectId) {
+      setErrorMessage("User ID is missing. Please log in again.");
+      router.push("/auth/login");
+      return;
+    }
     try {
       const actionResult = await dispatch(verifySession());
       const verificationResult = actionResult.payload as VerifyResponse;
       if (verificationResult?.verified) {
+        const taskPayload = {
+          ...taskData,
+          time: taskData.time.toISOString(),
+          userId: UserObjectId,
+        };
         if (task) {
-          await updateTask(task.id, {
-            ...taskData,
-            time: taskData.time.toISOString(),
-          });
+          await updateTask(task.id, taskPayload);
         } else {
-          await createTask({ ...taskData, time: taskData.time.toISOString() });
+          await createTask(taskPayload);
         }
         refreshTasks();
       }

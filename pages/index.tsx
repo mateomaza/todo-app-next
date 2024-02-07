@@ -15,6 +15,7 @@ import nookies from "nookies";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/auth.types";
+import UserDelete from "@/app/auth/user/user.delete";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -53,23 +54,25 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const { token, loading, error } = useSelector(
+  const { token, UserObjectId, loading, error, user } = useSelector(
     (state: RootState) => state.auth
   );
 
   useEffect(() => {
     const getTasks = async () => {
-      const response = await fetchTasks();
+      const response = await fetchTasks(UserObjectId);
       setTasks(response);
     };
-    if (session && token && !loading && !error) {
+    if (session && token && UserObjectId && !loading && !error) {
       getTasks();
     }
-  }, [session, token, loading, error]);
+  }, [session, token, UserObjectId, loading, error]);
 
   if (loading) {
     return <Loading loading={loading} />;
   }
+
+  console.log(user?.id);
 
   return (
     <PrivateRoute>
@@ -82,6 +85,7 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
         <TaskForm setTasks={setTasks} />
       </TaskModal>
       <TaskList tasks={tasks} setTasks={setTasks} />
+      <UserDelete id={user?.id} />
     </PrivateRoute>
   );
 };

@@ -10,11 +10,11 @@ export interface TaskType {
   createdAt: Date;
 }
 
-export const fetchTasks = async () => {
+export const fetchTasks = async (userId?: string) => {
   try {
-    const response: AxiosResponse<TaskType[]> = await axiosInstance.get(
-      "tasks"
-    );
+    const url = userId ? `tasks?userId=${userId}` : "tasks";
+    console.log(url);
+    const response: AxiosResponse<TaskType[]> = await axiosInstance.get(url);
     return response.data || [];
   } catch (err) {
     return [];

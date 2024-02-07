@@ -1,4 +1,4 @@
-interface User {
+export interface User {
   id: string;
   username: string;
   email: string;
@@ -12,6 +12,7 @@ export interface AuthState {
   error: string | null;
   isRefreshing: boolean;
   isLoggingOut: boolean;
+  UserObjectId: string | undefined;
 }
 
 export interface LoginCredentials {
@@ -27,7 +28,7 @@ export interface RegistrationData {
 
 export interface AuthResponse {
   access_token: string;
-  user: User;
+  user: User & { _id: string };
 }
 
 export interface CheckRefreshResponse {
@@ -36,7 +37,7 @@ export interface CheckRefreshResponse {
 
 export interface RefreshResponse {
   access_token: string;
-  user: User;
+  user: User & { _id: string };
 }
 
 export interface VerifyResponse {

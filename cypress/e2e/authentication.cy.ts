@@ -1,4 +1,12 @@
-import { AuthState } from "@/redux/types/auth.types";
+import { AuthState, User } from "@/redux/types/auth.types";
+
+let requestCount = 0;
+
+const expectedUser: User = {
+  id: '123',
+  username: 'testuser',
+  email: 'newuser@test.com'
+};
 
 describe("Authentication Flow", () => {
   beforeEach(() => {
@@ -12,121 +20,261 @@ describe("Authentication Flow", () => {
     cy.window()
       .its("store")
       .invoke("dispatch", { type: "auth/resetAuthState" });
+    requestCount = 0;
   });
 
   it("should register a new user successfully", () => {
-    // Steps to navigate to the registration page
-    // Fill out the registration form and submit
-    // Assertions to confirm registration was successful
-  });
-
-  it("should log in a user successfully", () => {
-    // Steps to navigate to the login page
-    // Fill out the login form and submit
-    // Assertions to confirm login was successful
-  });
-
-  it("should handle session expiry correctly", () => {
-    // Logic to simulate a session expiry (if applicable)
-    // Assertions to confirm the app behaves as expected after session expiry
-  });
-
-  it("should refresh the token periodically", () => {
-    // Steps to perform actions that would trigger a token refresh
-    // Assertions to confirm a new token was fetched and stored
-  });
-
-  it("should refresh the token on a 401 response and retry the request", () => {
-    // Mock an API call that returns a 401
-    cy.intercept("GET", "/api/protected-endpoint", (req) => {
-      req.reply((res) => {
-        res.send(401);
-      });
-    }).as("protectedEndpoint");
-
-    // Mock the token refresh call
-    cy.intercept("POST", "/api/refresh", {
-      statusCode: 200,
+    cy.intercept("POST", "/api/auth/register", {
+      statusCode: 201,
       body: {
-        accessToken: "new-access-token",
+        user: expectedUser,
+        access_token: 'access_token',
       },
-    }).as("refreshToken");
+    }).as("register");
 
-    // Perform an action that triggers the protected API call
-    // ...
-
-    // Wait for the protected endpoint to return 401
-    cy.wait("@protectedEndpoint");
-
-    // Wait for the token refresh call
-    cy.wait("@refreshToken");
-
-    // Assert that the token was refreshed
-    // (You might check the local state, Redux store, or localStorage, depending on your implementation)
-    // ...
-
-    // Optionally, assert that the original request was retried
-    // ...
-  });
-
-  it("should verify the session periodically", () => {
-    // Mock the verifyToken API call
-    cy.intercept("POST", "/api/verifyToken", {
-      statusCode: 200,
-      body: {
-        // Mocked response data
-      },
-    }).as("verifyToken");
-
-    // Visit the page that initializes the session verification
-    cy.visit("/");
-
-    // Wait for the first verifyToken call to complete
-    cy.wait("@verifyToken");
-
-    // Use cy.clock() and cy.tick() to simulate the passage of time if your verification occurs at set intervals
-    // cy.clock();
-    // cy.tick(timeInMilliseconds);
-
-    // Wait for the next verifyToken call
-    // cy.wait('@verifyToken');
-
-    // Assert any changes in the application state or UI as a result of session verification
-    // ...
-  });
-
-  it.only("should log out a user successfully", () => {
-    cy.intercept("POST", "/api/auth/login", {
-      statusCode: 200,
-      body: {
-        message: "Successful login",
-        access_token: "fake-token",
-        user: {
-          id: "fake-id",
-          username: "testuser",
-          email: "testuser@example.com",
-        },
-      },
-    }).as("login");
-
-    cy.intercept("POST", "/api/auth/logout", {
-      statusCode: 200,
-    }).as("logout");
+    cy.visit("/auth/register");
 
     cy.get('input[name="username"]').type("testuser");
+    cy.get('input[name="email"]').type("newuser@test.com");
     cy.get('input[name="password"]').type("password123");
-    cy.get('[data-testid="login-button"]').click();
-    cy.wait("@login")
 
-    cy.get('[data-testid="logout-button"]').click();
-    cy.wait("@logout");
+    cy.get('[data-testid="register-button"]').click();
+
+    cy.wait("@register");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
 
     cy.window()
       .its("store")
       .invoke("getState")
       .its("auth")
       .then((authState: AuthState) => {
-        expect(authState.isAuthenticated).to.be.false;
+        expect(authState.token).to.eq("access-token");
+        expect(authState.user).to.deep.equal(expectedUser);
+      });
+  });
+
+  it("should log in a user successfully", () => {
+    cy.intercept("POST", "/api/auth/login", {
+      statusCode: 200,
+      body: {
+        user: expectedUser,
+        access_token: 'access_token',
+      },
+    }).as("login");
+
+    cy.login("testuser", "password123");
+
+    cy.wait("@login");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.token).to.eq("access-token");
+        expect(authState.user).to.deep.equal(expectedUser);
+      });
+  });
+
+  it("should handle session expiry correctly", () => {
+    cy.login("testuser", "password123");
+    cy.clock();
+
+    cy.intercept("POST", "/api/auth/logout", {
+      statusCode: 200
+    }).as("logout");
+  
+    cy.tick(15 * 60 * 1000 + 1);
+    cy.wait("@logout");
+
+    cy.url().should("include", "/auth/login");
+  
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.false;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.token).to.be.null;
+      });
+  });
+
+  it("should refresh the token periodically", () => {
+    cy.login("testuser", "password123");
+    cy.clock();
+
+    cy.intercept("POST", "/api/auth/refresh", {
+      statusCode: 201,
+      body: {
+        access_token: "new-access-token",
+        user: expectedUser,
+      },
+    }).as("tokenRefresh");
+
+    const expiryFromToken = 15 * 60;
+    const buffer = 1 * 60;
+    const timeToAdvance = (expiryFromToken - buffer) * 1000;
+
+    cy.tick(timeToAdvance);
+    cy.wait("@tokenRefresh");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.token).to.eq("new-access-token");
+        expect(authState.user).to.deep.equal(expectedUser);
+      });
+
+    cy.tick(timeToAdvance);
+    cy.wait("@tokenRefresh");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.token).to.eq("new-access-token");
+        expect(authState.user).to.deep.equal(expectedUser);
+      });
+  });
+
+  it("should refresh the token on a 401 response and retry the request", () => {
+    cy.login("testuser", "password123");
+
+    cy.intercept("GET", "/api/tasks", (req) => {
+      requestCount++;
+      req.reply((res) => {
+        res.send(401);
+      });
+    }).as("expiredTokenRequest");
+
+    cy.intercept("POST", "/api/auth/refresh", {
+      statusCode: 201,
+      body: {
+        access_token: "new-access-token",
+        user: expectedUser,
+      },
+    }).as("tokenRefresh");
+
+    cy.wait("@expiredTokenRequest");
+    cy.wait("@tokenRefresh");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.token).to.eq("new-access-token");
+        expect(authState.user).to.deep.equal(expectedUser);
+      });
+
+    expect(requestCount).to.be.greaterThan(1);
+  });
+
+  it("should verify the session periodically", () => {
+    cy.login("testuser", "password123");
+    cy.clock();
+
+    cy.intercept("POST", "/api/auth/verify-session", {
+      statusCode: 200,
+      body: { verified: true },
+    }).as("verifySession");
+
+    cy.url().should("include", "dashboard");
+
+    cy.tick(13 * 60 * 1000 + 1);
+    cy.wait("@verifySession");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+
+    cy.tick(13 * 60 * 1000);
+    cy.wait("@verifySession");
+
+    cy.url().should("include", "dashboard");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated' && cookie.value === 'true')).to.be.true;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.true;
+    });
+  });
+
+  it("should log out a user successfully", () => {
+    cy.login("testuser", "password123");
+
+    cy.intercept("POST", "/api/auth/logout", {
+      statusCode: 200
+    }).as("logout");
+
+    cy.get('[data-testid="logout-button"]').click();
+
+    cy.wait("@logout");
+
+    cy.url().should("include", "auth/login");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.false;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
         expect(authState.token).to.be.null;
       });
   });
