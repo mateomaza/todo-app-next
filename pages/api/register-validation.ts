@@ -7,6 +7,12 @@ export default async function handler(
   if (req.method === "POST") {
     const { username, password, email } = req.body;
 
+    if (typeof username !== 'string' || typeof password !== 'string' || typeof email !== 'string') {
+      return res.status(400).json({
+        error: "All fields must be a string."
+      });
+    }
+
     if (!email || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       return res.status(400).json({ error: "Invalid email address" });
     }

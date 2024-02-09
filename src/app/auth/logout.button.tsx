@@ -24,7 +24,6 @@ export default function LogoutButton() {
       {isLoggingOut ? (
         <>
           <BounceLoader color="#007BFF" loading={loading} size={60} />
-          <h1>Logging Out...</h1>
         </>
       ) : (
         <button

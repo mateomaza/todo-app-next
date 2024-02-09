@@ -59,20 +59,22 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
   );
 
   useEffect(() => {
-    const getTasks = async () => {
-      const response = await fetchTasks(UserObjectId);
-      setTasks(response);
+    const getTasks = async (UserObjectId: string) => {
+      try {
+        const response = await fetchTasks(UserObjectId);
+        setTasks(response);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
     };
     if (session && token && UserObjectId && !loading && !error) {
-      getTasks();
+      getTasks(UserObjectId);
     }
   }, [session, token, UserObjectId, loading, error]);
 
   if (loading) {
     return <Loading loading={loading} />;
   }
-
-  console.log(user?.id);
 
   return (
     <PrivateRoute>
@@ -85,7 +87,7 @@ const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
         <TaskForm setTasks={setTasks} />
       </TaskModal>
       <TaskList tasks={tasks} setTasks={setTasks} />
-      <UserDelete id={user?.id} />
+      <UserDelete UserObjectId={UserObjectId} />
     </PrivateRoute>
   );
 };

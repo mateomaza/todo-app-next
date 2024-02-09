@@ -7,6 +7,12 @@ export default async function handler(
   if (req.method === "POST") {
     const { username, password } = req.body;
 
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({
+        error: "Both fields must be a string."
+      });
+    }
+
     if (!username) {
       return res.status(400).json({
         error: "Username is required."
