@@ -13,10 +13,10 @@ export default function LogoutButton() {
   );
 
   const handleLogout = () => {
-    fetch("/api/logout-session", { method: "POST" });
     dispatch(logout()).then(() => {
       router.push("/auth/login");
     });
+    fetch("/api/logout-session", { method: "POST" });
   };
 
   return (

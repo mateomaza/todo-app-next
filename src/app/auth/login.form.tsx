@@ -20,15 +20,17 @@ const LoginForm = () => {
   const [validationError, setValidationError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, loading, error } = useSelector(
+  const { loading, error } = useSelector(
     (state: RootState) => state.auth
   );
+  const cookies = parseCookies({})
+  const auth_cookie = cookies["authenticated"]; 
 
   useEffect(() => {
-    if (isAuthenticated && !loading && !error) {
+    if (auth_cookie && !loading && !error) {
       router.push("/");
     }
-  }, [isAuthenticated, loading, error, router]);
+  }, [auth_cookie, loading, error, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

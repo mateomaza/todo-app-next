@@ -7,15 +7,15 @@ import { parseCookies } from "nookies";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { isAuthenticated, isRefreshing, loading } = useSelector((state: RootState) => state.auth);
+  const { isRefreshing, loading } = useSelector((state: RootState) => state.auth);
   const cookies = parseCookies({})
   const auth_cookie = cookies["authenticated"]; 
 
   useEffect(() => {
-    if (!isAuthenticated && !auth_cookie && !isRefreshing && !loading) {
+    if (!auth_cookie && !isRefreshing && !loading) {
       router.push("/auth/login");
     }
-  }, [isAuthenticated, auth_cookie, isRefreshing, loading, router]);
+  }, [auth_cookie, isRefreshing, loading, router]);
 
   if (loading) {
     return <Loading loading={loading} />;

@@ -44,17 +44,16 @@ export const getServerSideProps: GetServerSideProps = async (
 
 type HomePageProps = {
   session: UserSession;
-  refresh_token: string;
 };
 
-const HomePage: React.FC<HomePageProps> = ({ session, refresh_token }) => {
+const HomePage: React.FC<HomePageProps> = ({ session }) => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const { token, UserObjectId, loading, error, user } = useSelector(
+  const { token, UserObjectId, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
 

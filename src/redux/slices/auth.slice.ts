@@ -18,7 +18,6 @@ import {
 import { getErrorMessage } from "./utilities";
 
 const initialState: AuthState = {
-  isAuthenticated: false,
   user: null,
   token: null,
   loading: false,
@@ -42,7 +41,6 @@ const authSlice = createSlice({
       .addCase(
         login.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
-          state.isAuthenticated = true
           state.user = action.payload.user;
           state.token = action.payload.access_token;
           state.loading = false;
@@ -53,7 +51,6 @@ const authSlice = createSlice({
       .addCase(
         login.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
-          state.isAuthenticated = false
           state.loading = false;
           state.error = getErrorMessage(action.payload);
         }
@@ -64,7 +61,6 @@ const authSlice = createSlice({
       .addCase(
         register.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
-          state.isAuthenticated = true
           state.user = action.payload.user;
           state.token = action.payload.access_token;
           state.loading = false;
@@ -75,7 +71,6 @@ const authSlice = createSlice({
       .addCase(
         register.rejected,
         (state, action: PayloadAction<AuthError | unknown>) => {
-          state.isAuthenticated = false
           state.loading = false;
           state.error = getErrorMessage(action.payload);
         }
@@ -88,7 +83,6 @@ const authSlice = createSlice({
       .addCase(
         checkRefreshToken.fulfilled,
         (state, action: PayloadAction<CheckRefreshResponse>) => {
-          state.isAuthenticated = action.payload.verified
           state.loading = false;
         }
       )
@@ -109,7 +103,6 @@ const authSlice = createSlice({
         refreshToken.fulfilled,
         (state, action: PayloadAction<RefreshResponse | undefined>) => {
           if (action.payload) {
-            state.isAuthenticated = true
             state.user = action.payload.user;
             state.token = action.payload.access_token;
             state.loading = false;
@@ -137,7 +130,6 @@ const authSlice = createSlice({
       .addCase(
         verifySession.fulfilled,
         (state, action: PayloadAction<VerifyResponse>) => {
-          state.isAuthenticated = action.payload.verified;
           state.loading = false;
           state.error = null;
         }
@@ -156,7 +148,6 @@ const authSlice = createSlice({
         state.isLoggingOut = true;
       })
       .addCase(logout.fulfilled, (state) => {
-        state.isAuthenticated = false
         state.user = null;
         state.token = null;
         state.loading = false;
