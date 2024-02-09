@@ -7,17 +7,17 @@ import { AppDispatch } from "@/redux/store";
 import { resetAuthState } from '@/redux/slices/auth.slice';
 
 interface UserDeleteProps {
-  id: string | undefined;
+  UserObjectId: string | undefined;
 };
 
-const UserDelete = ({ id }: UserDeleteProps) => {
+const UserDelete = ({ UserObjectId }: UserDeleteProps) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
 
   const handleUserDeletion = async () => {
     setErrorMessage("");
     try {
-      await deleteUser(id);
+      await deleteUser(UserObjectId);
       dispatch(resetAuthState());
     } catch (error) {
       const err = error as { message?: string };
