@@ -154,6 +154,7 @@ const authSlice = createSlice({
         state.error = null;
         state.isLoggingOut = false;
         state.isRefreshing = false;
+        state.UserObjectId = undefined
       })
       .addCase(
         logout.rejected,

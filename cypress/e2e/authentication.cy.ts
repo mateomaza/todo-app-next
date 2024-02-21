@@ -1,4 +1,5 @@
 import { AuthState, User } from "@/redux/types/auth.types";
+import './commands';
 
 let requestCount = 0;
 
@@ -6,17 +7,16 @@ const expectedUser: User = {
   id: '123',
   username: 'testuser',
   email: 'newuser@test.com'
-};
+}; 
 
 describe("Authentication Flow", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000");
-    cy.wait(500);
+    cy.url().should("include", "/auth/login");
+    cy.clearCookies();
     cy.window().then((win) => {
       assert.isDefined(win.store, "store is defined on window");
     });
-    cy.url().should("include", "/auth/login");
-    cy.clearCookies();
     cy.window()
       .its("store")
       .invoke("dispatch", { type: "auth/resetAuthState" });
@@ -24,7 +24,7 @@ describe("Authentication Flow", () => {
   });
 
   it("should register a new user successfully", () => {
-    cy.intercept("POST", "/api/auth/register", {
+    cy.intercept("POST", "http://localhost:3001/api/auth/register", {
       statusCode: 201,
       body: {
         user: expectedUser,
@@ -61,7 +61,7 @@ describe("Authentication Flow", () => {
   });
 
   it("should log in a user successfully", () => {
-    cy.intercept("POST", "/api/auth/login", {
+    cy.intercept("POST", "http://localhost:3001/api/auth/login", {
       statusCode: 200,
       body: {
         user: expectedUser,
@@ -95,7 +95,7 @@ describe("Authentication Flow", () => {
     cy.login("testuser", "password123");
     cy.clock();
 
-    cy.intercept("POST", "/api/auth/logout", {
+    cy.intercept("POST", "http://localhost:3001/api/auth/logout", {
       statusCode: 200
     }).as("logout");
   
@@ -276,6 +276,39 @@ describe("Authentication Flow", () => {
       .its("auth")
       .then((authState: AuthState) => {
         expect(authState.token).to.be.null;
+      });
+  });
+
+  it("should delete a user successfully", () => {
+    cy.login("testuser", "password123");
+
+    cy.window().then((win) => {
+      const UserObjectId = win.store ? win.store.getState().auth.UserObjectId : undefined;
+      Cypress.env('UserObjectId', UserObjectId);
+    });
+
+    cy.intercept('DELETE', `/api/users/${Cypress.env('UserObjectId')}/delete`, {
+      statusCode: 200,
+    }).as('deleteUser');
+
+    cy.get('[data-testid="delete-button"]').click();
+
+    cy.wait('@deleteUser');
+
+    cy.url().should("include", "auth/login");
+
+    cy.getCookies().should((cookies) => {
+      expect(cookies.some((cookie) => cookie.name === 'refresh_token')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'authenticated')).to.be.false;
+      expect(cookies.some((cookie) => cookie.name === 'session')).to.be.false;
+    });
+
+    cy.window()
+      .its("store")
+      .invoke("getState")
+      .its("auth")
+      .then((authState: AuthState) => {
+        expect(authState.user).to.be.null;
       });
   });
 });

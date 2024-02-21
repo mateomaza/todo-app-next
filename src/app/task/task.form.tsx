@@ -129,22 +129,26 @@ const TaskForm = ({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex flex-col">
+      <p className="text-[16px] font-semibold py-3">Task Title:</p>
       <input
         type="text"
         value={taskData.title}
         onChange={handleChange}
         placeholder="Title"
         name="title"
+        className="bg-white border border-[#aba9a9] mb-3 py-1 px-3 rounded-[3px] text-black text-[14px] shadow-inner"
         required
       />
+      <p className="text-[16px] font-semibold py-3">Task Description:</p>
       <textarea
         value={taskData.description}
         onChange={handleChange}
         placeholder="Description"
+        className="bg-white border border-[#aba9a9] mb-3 py-1 px-3 rounded-[3px] text-black text-[14px] shadow-inner"
         name="description"
       />
-      <label>
+      <label className="text-[16px] font-semibold py-3">
         Completed:
         <Switch
           checked={taskData.completed}
@@ -153,13 +157,23 @@ const TaskForm = ({
           color="primary"
         />
       </label>
-      <DatePicker
-        selected={taskData.time}
-        onChange={handleDateChange}
-        showTimeSelect
-        dateFormat="Pp"
-      />
-      <button type="submit" disabled={loading}>{task ? "Update Task" : "Create Task"}</button>
+      <div className="flex flex-row items-center">
+        <p className="text-[16px] font-semibold py-3 mr-3">When are you doing this task?</p>
+        <DatePicker
+          selected={taskData.time}
+          onChange={handleDateChange}
+          showTimeSelect
+          dateFormat="Pp"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-blue-700 text-white font-bold text-[18px] py-2 px-5 rounded-[8px] mt-3 hover:bg-blue-800"
+      >
+        {task ? "Update Task" : "Create Task"}
+      </button>
     </form>
   );
 };

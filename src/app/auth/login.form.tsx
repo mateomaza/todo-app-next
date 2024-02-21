@@ -62,30 +62,37 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {(error || validationError) && (
-        <Error errorMessage={error || validationError} />
-      )}
-      <input
-        type="text"
-        value={loginData.username}
-        onChange={handleChange}
-        placeholder="Username"
-        name="username"
-        required
-      />
-      <input
-        type="password"
-        value={loginData.password}
-        onChange={handleChange}
-        placeholder="Password"
-        name="password"
-        required
-      />
-      <button type="submit" disabled={loading} data-testid="login-button">
-        Login
-      </button>
-    </form>
+    <div className="flex flex-col">
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <p className="text-[16px] font-semibold">Username</p>
+        <input
+          type="text"
+          value={loginData.username}
+          onChange={handleChange}
+          placeholder="Username"
+          name="username"
+          className="my-2 py-2 px-3 rounded-[5px] text-black"
+          required
+        />
+        <p className="text-[16px] font-semibold">Password</p>
+        <input
+          type="password"
+          value={loginData.password}
+          onChange={handleChange}
+          placeholder="Password"
+          name="password"
+          className="my-2 py-2 px-3 rounded-[5px] text-black"
+          required
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 };
 

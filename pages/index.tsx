@@ -16,13 +16,14 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/auth.types";
 import UserDelete from "@/app/auth/user/user.delete";
+import Header from "@/app/nav/header";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   const cookies = nookies.get(context);
-  const refresh_token = cookies["refresh_token"];
-  if (refresh_token) {
+  const auth_cookie = cookies["authenticated"];
+  if (auth_cookie) {
     const session = await getIronSession<UserSession>(
       context.req,
       context.res,
@@ -30,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (
     );
     if (session.user) {
       return {
-        props: { session: session, refresh_token: refresh_token },
+        props: { session: session },
       };
     }
   }
@@ -53,7 +54,7 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
-  const { token, UserObjectId, loading, error } = useSelector(
+  const { UserObjectId, loading, error } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -66,10 +67,10 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
         console.error("Failed to fetch tasks:", error);
       }
     };
-    if (session && token && UserObjectId && !loading && !error) {
+    if (session && UserObjectId && !loading && !error) {
       getTasks(UserObjectId);
     }
-  }, [session, token, UserObjectId, loading, error]);
+  }, [session, UserObjectId, loading, error]);
 
   if (loading) {
     return <Loading loading={loading} />;
@@ -77,16 +78,49 @@ const HomePage: React.FC<HomePageProps> = ({ session }) => {
 
   return (
     <PrivateRoute>
-      <LogoutButton />
-      <h1>Tasks</h1>
-      <Button variant="outlined" onClick={handleOpen}>
-        Create a New Task
-      </Button>
-      <TaskModal open={isModalOpen} handleClose={handleClose}>
-        <TaskForm setTasks={setTasks} />
-      </TaskModal>
-      <TaskList tasks={tasks} setTasks={setTasks} />
-      <UserDelete UserObjectId={UserObjectId} />
+      <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        marginLeft: "-10px",
+        padding: "0px",
+        height: "100vh",
+      }}
+    >
+      <Header />
+      <div className="sidebar flex flex-col justify-end mr-5 py-4 px-9 bg-slate-300 border-r-2 border-gray-500 fixed min-h-screen ">
+        <UserDelete UserObjectId={UserObjectId} />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginTop: "7rem",
+          width: "100%",
+          padding: "0 2rem",
+        }}
+        className="ml-[16rem] smd:ml-0"
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h1 style={{ fontSize: "26px" }}>Tasks</h1>
+          <Button variant="outlined" onClick={handleOpen}>
+            Create a New Task
+          </Button>
+        </div>
+        <TaskModal open={isModalOpen} handleClose={handleClose}>
+          <TaskForm setTasks={setTasks} />
+        </TaskModal>
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      </div>
+    </div>
     </PrivateRoute>
   );
 };

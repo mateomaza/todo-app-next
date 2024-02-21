@@ -1,12 +1,16 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
-const config: Config = {
+const config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
+    screens:{
+      'smd': {max: '767px'},
+      '2md': {max: '991px'},
+      md: '768px',
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -16,5 +20,5 @@ const config: Config = {
     },
   },
   plugins: [],
-}
+}satisfies Config;
 export default config

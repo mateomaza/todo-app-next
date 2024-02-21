@@ -1,0 +1,27 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.sidebar{
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid rgb(238, 238, 238);
+  justify-content: flex-end;
+  margin-right: 20px;
+  background-color: rgb(238, 238, 238);
+  padding-bottom: 5rem;
+}
+
+@media(max-width: 767px){
+  .sidebar{
+  display: none;
+  }
+}

@@ -62,35 +62,42 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {(error || validationError) && (
-        <Error errorMessage={error || validationError} />
-      )}
+    <form onSubmit={handleSubmit} className="flex flex-col">
+      <p className="text-[16px] font-semibold">Username</p>
       <input
         type="text"
         value={registerData.username}
         onChange={handleChange}
         placeholder="Username"
         name="username"
+        className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
       />
+      <p className="text-[16px] font-semibold">Email</p>
       <input
         type="email"
         value={registerData.email}
         onChange={handleChange}
         placeholder="Email"
         name="email"
+        className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
       />
+      <p className="text-[16px] font-semibold">Password</p>
       <input
         type="password"
         value={registerData.password}
         onChange={handleChange}
         placeholder="Password"
         name="password"
+        className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
       />
-      <button type="submit" disabled={loading} data-testid="register-button">
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
+      >
         Register
       </button>
     </form>

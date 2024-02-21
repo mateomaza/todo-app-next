@@ -8,12 +8,23 @@ import {
   verifySession,
 } from "@/redux/thunks/auth.thunks";
 import { parseCookies } from "nookies";
+import '../styles/globals.css'
 
 let inactivityTimer: NodeJS.Timeout | number;
 
 const startInactivityTimer = (timeout = 15 * 60 * 1000) => {
   if (inactivityTimer) clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => store.dispatch(logout()), timeout);
+  inactivityTimer = setTimeout(() => {
+    store.dispatch(logout()).then(() => {
+      fetch("/api/logout-session", { method: "POST" })
+        .then(() => {
+          window.location.href = "/auth/login";
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  }, timeout);
 };
 
 const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
@@ -21,7 +32,6 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 };
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-
   useEffect(() => {
     const cookies = parseCookies({});
     const auth_cookie = cookies["authenticated"];
