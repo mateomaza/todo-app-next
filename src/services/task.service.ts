@@ -13,7 +13,6 @@ export interface TaskType {
 export const fetchTasks = async (userId?: string) => {
   try {
     const url = userId ? `tasks?userId=${userId}` : "tasks";
-    console.log(url);
     const response: AxiosResponse<TaskType[]> = await axiosInstance.get(url);
     return response.data || [];
   } catch (err) {
@@ -37,6 +36,6 @@ export const updateTask = async (id: string, taskData: any) => {
   return axiosInstance.patch(`tasks/${id}/update`, taskData);
 };
 
-export const deleteTask = async (id: string) => {
-  return axiosInstance.delete(`tasks/${id}/delete`);
+export const deleteTask = async (TaskObjectId: string | undefined) => {
+  return axiosInstance.delete(`tasks/${TaskObjectId}/delete`);
 };

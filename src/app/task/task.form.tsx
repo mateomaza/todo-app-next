@@ -4,8 +4,6 @@ import { createTask, updateTask } from "@/services/task.service";
 import { TaskType } from "@/services/task.service";
 import { fetchTasks } from "@/services/task.service";
 import Error from "@/app/nav/error";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Switch from "@mui/material/Switch";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -14,6 +12,7 @@ import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { MyDatePicker } from "../custom/date.picker";
 
 type FormData = {
   title: string;
@@ -92,15 +91,10 @@ const TaskForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
-    if (!UserObjectId) {
-      setErrorMessage("User ID is missing. Please log in again.");
-      router.push("/auth/login");
-      return;
-    }
     try {
       const actionResult = await dispatch(verifySession());
       const verificationResult = actionResult.payload as VerifyResponse;
-      if (verificationResult?.verified) {
+      if (verificationResult?.verified && UserObjectId) {
         const taskPayload = {
           ...taskData,
           time: taskData.time.toISOString(),
@@ -159,11 +153,9 @@ const TaskForm = ({
       </label>
       <div className="flex flex-row items-center">
         <p className="text-[16px] font-semibold py-3 mr-3">When are you doing this task?</p>
-        <DatePicker
+        <MyDatePicker
           selected={taskData.time}
           onChange={handleDateChange}
-          showTimeSelect
-          dateFormat="Pp"
         />
       </div>
 

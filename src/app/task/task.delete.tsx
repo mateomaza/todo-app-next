@@ -5,11 +5,11 @@ import axios from "axios";
 import Error from "@/app/nav/error";
 
 interface TaskDeleteProps {
-  id: string;
+  TaskObjectId: string | undefined;
   setTasks: (tasks: TaskType[]) => void;
 }
 
-const TaskDelete: React.FC<TaskDeleteProps> = ({ id, setTasks }) => {
+const TaskDelete: React.FC<TaskDeleteProps> = ({ TaskObjectId, setTasks }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const refreshTasks = async () => {
@@ -30,7 +30,7 @@ const TaskDelete: React.FC<TaskDeleteProps> = ({ id, setTasks }) => {
   const handleTaskDeletion = async () => {
     setErrorMessage("");
     try {
-      await deleteTask(id);
+      await deleteTask(TaskObjectId);
       await refreshTasks();
     } catch (error) {
       const err = error as { message?: string };
@@ -47,6 +47,7 @@ const TaskDelete: React.FC<TaskDeleteProps> = ({ id, setTasks }) => {
       onDelete={handleTaskDeletion}
       title="Confirm Task Deletion"
       description="Are you sure you want to delete this task?"
+      taskDelete={true}
     />
   );
 };
