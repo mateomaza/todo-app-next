@@ -1,6 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
-import LogoutButton from '../auth/logout.button';
+import React from "react";
+import Link from "next/link";
+import LogoutButton from "../auth/logout.button";
 
 const Header = () => {
   return (
@@ -9,18 +9,6 @@ const Header = () => {
         <h2 className="text-[20px] smd:text-[16px] smd:w-[6rem] md:w-[13rem]">
           Task Tracker
         </h2>
-      </Link>
-      <Link href="/" passHref>
-        <p className="ml-36 smd:ml-4 text-[18px] font-normal hover:text-blue-700">
-          {" "}
-          Home
-        </p>
-      </Link>
-      <Link href="/" passHref>
-        <p className="mx-5 text-[18px] font-normal hover:text-blue-700">
-          {" "}
-          Others
-        </p>
       </Link>
       <div className="flex flex-row w-full justify-end">
         <LogoutButton />

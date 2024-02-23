@@ -11,12 +11,14 @@ interface DeleteButtonProps {
   onDelete: () => void;
   title: string;
   description: string;
+  taskDelete?: boolean;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   onDelete,
   title,
   description,
+  taskDelete,
 }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -49,7 +51,22 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
   return (
     <>
-      <button onClick={handleOpenModal} disabled={loading} data-testid="delete-button">Delete</button>
+      {taskDelete ? (
+        <i
+          className="fa-solid fa-trash-can text-gray-500 cursor-pointer"
+          onClick={handleOpenModal}
+          role="button"
+          aria-label="Delete task"
+        ></i>
+      ) : (
+        <button
+          onClick={handleOpenModal}
+          disabled={loading}
+          data-testid="delete-button"
+        >
+          Delete
+        </button>
+      )}
 
       <ConfirmationModal
         open={isModalOpen}

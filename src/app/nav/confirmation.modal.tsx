@@ -41,15 +41,25 @@ const ConfirmationModal = ({
       aria-describedby="confirmation-modal-description"
     >
       <Box sx={style}>
-        <h2 id="confirmation-modal-title">{title}</h2>
-        <p id="confirmation-modal-description">{description}</p>
-        <div>
-          <button onClick={onConfirm} disabled={loading}>
-            Confirm
-          </button>
-          <button onClick={handleClose} disabled={loading}>
-            Cancel
-          </button>
+        <div className="flex flex-col">
+          <h2 id="confirmation-modal-title">{title}</h2>
+          <p id="confirmation-modal-description">{description}</p>
+          <div className="flex flex-row items-center justify-end">
+            <button
+              onClick={onConfirm}
+              disabled={loading}
+              className="text-[14px] font-semibold text-blue-600 cursor-pointer"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={handleClose}
+              disabled={loading}
+              className="mr-4 text-[14px] font-semibold text-gray-500 cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </Box>
     </Modal>
