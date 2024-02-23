@@ -1,7 +1,7 @@
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "config/session.config";
 import { NextApiRequest, NextApiResponse } from "next";
-import { UserSession } from "types/auth.types";
+import { UserSession } from "types/session.types";
 
 export default async function handler(
   req: NextApiRequest,
