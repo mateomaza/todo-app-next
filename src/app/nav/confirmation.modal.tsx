@@ -42,20 +42,24 @@ const ConfirmationModal = ({
     >
       <Box sx={style}>
         <div className="flex flex-col">
-          <h2 id="confirmation-modal-title">{title}</h2>
-          <p id="confirmation-modal-description">{description}</p>
-          <div className="flex flex-row items-center justify-end">
+          <h2 id="confirmation-modal-title" className="text-xl font-bold mb-2">
+            {title}
+          </h2>
+          <p id="confirmation-modal-description" className="text-gray-600">
+            {description}
+          </p>
+          <div className="flex flex-row items-center justify-end mt-5">
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="text-[14px] font-semibold text-blue-600 cursor-pointer"
+              className="text-blue-600 font-semibold mr-2 px-2 py-1 border border-blue-600 rounded hover:bg-blue-50 focus:outline-none focus:ring focus:ring-blue-200"
             >
               Confirm
             </button>
             <button
               onClick={handleClose}
               disabled={loading}
-              className="mr-4 text-[14px] font-semibold text-gray-500 cursor-pointer"
+              className="text-gray-500 font-semibold px-2 py-1 border border-gray-500 rounded hover:bg-gray-50 focus:outline-none focus:ring focus:ring-gray-200"
             >
               Cancel
             </button>

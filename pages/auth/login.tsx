@@ -7,10 +7,10 @@ export default function Login() {
       <div className="flex flex-col bg-slate-900 text-white px-8 py-6 rounded-[10px]">
         <h1 className="text-center font-bold text-[20px] mb-4">Login</h1>
         <LoginForm />
-        <p className="py-4">
+        <p className="py-1">
           Haven&apos;t got an account?{" "}
           <Link href="/auth/register" className="underline text-blue-500 ml-2">
-            Click here to register
+            Click here to register.
           </Link>
         </p>
       </div>

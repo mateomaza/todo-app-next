@@ -14,7 +14,11 @@ const Loading: React.FC<LoadingProps> = ({
 }) => {
   if (!loading) return null;
 
-  return <BounceLoader color={color} loading={loading} size={size} />;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <BounceLoader color={color} loading={loading} size={size} />
+    </div>
+  );
 };
 
 export default Loading;

@@ -64,7 +64,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
           disabled={loading}
           data-testid="delete-button"
         >
-          Delete
+          Delete User
         </button>
       )}
 

@@ -23,8 +23,8 @@ const RegisterForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const cookies = parseCookies({})
-  const auth_cookie = cookies["authenticated"]; 
+  const cookies = parseCookies({});
+  const auth_cookie = cookies["authenticated"];
 
   useEffect(() => {
     if (auth_cookie && !loading && !error) {
@@ -72,6 +72,7 @@ const RegisterForm = () => {
         name="username"
         className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
+        autoComplete="username"
       />
       <p className="text-[16px] font-semibold">Email</p>
       <input
@@ -82,6 +83,7 @@ const RegisterForm = () => {
         name="email"
         className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
+        autoComplete="email"
       />
       <p className="text-[16px] font-semibold">Password</p>
       <input
@@ -93,6 +95,22 @@ const RegisterForm = () => {
         className="my-2 py-2 px-3 rounded-[5px] text-black"
         required
       />
+      <div className="my-5">
+        <ul>
+          <li>
+          ▫️ Username must be 3-20 characters long and can only include
+            alphanumeric characters.
+          </li>
+          <li>▫️ Password must be at least 12 characters long.</li>
+          <li>▫️ Password must include both alphabetic and numeric characters.</li>
+          <li>▫️ Password cannot contain your username.</li>
+        </ul>
+      </div>
+      <div className="my-3">
+          {(error || validationError) && (
+            <Error errorMessage={error || validationError} />
+          )}
+        </div>
       <button
         type="submit"
         disabled={loading}

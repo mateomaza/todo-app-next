@@ -20,11 +20,9 @@ const LoginForm = () => {
   const [validationError, setValidationError] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector(
-    (state: RootState) => state.auth
-  );
-  const cookies = parseCookies({})
-  const auth_cookie = cookies["authenticated"]; 
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const cookies = parseCookies({});
+  const auth_cookie = cookies["authenticated"];
 
   useEffect(() => {
     if (auth_cookie && !loading && !error) {
@@ -73,6 +71,7 @@ const LoginForm = () => {
           name="username"
           className="my-2 py-2 px-3 rounded-[5px] text-black"
           required
+          autoComplete="username"
         />
         <p className="text-[16px] font-semibold">Password</p>
         <input
@@ -91,6 +90,11 @@ const LoginForm = () => {
         >
           Login
         </button>
+        <div className="my-3">
+          {(error || validationError) && (
+            <Error errorMessage={error || validationError} />
+          )}
+        </div>
       </form>
     </div>
   );
