@@ -8,7 +8,7 @@ import {
   verifySession,
 } from "@/redux/thunks/auth.thunks";
 import { parseCookies } from "nookies";
-import '../styles/globals.css'
+import "../styles/globals.css";
 
 let inactivityTimer: NodeJS.Timeout | number;
 
@@ -42,9 +42,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   }, []);
 
   useEffect(() => {
+    const cookies = parseCookies({});
+    const auth_cookie = cookies["authenticated"];
     const verify = async () => {
-      const { token, error, loading } = store.getState().auth;
-      if (token && !error && !loading) {
+      const { error, loading } = store.getState().auth;
+      if (auth_cookie && !error && !loading) {
         store.dispatch(verifySession());
       }
     };
@@ -61,7 +63,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     const handleActivity = () => resetInactivityTimer();
     document.addEventListener("mousemove", handleActivity);
     document.addEventListener("keypress", handleActivity);
-    startInactivityTimer();
+    const cookies = parseCookies({});
+    const auth_cookie = cookies["authenticated"];
+    if (auth_cookie) {
+      startInactivityTimer();
+    }
     return () => {
       document.removeEventListener("mousemove", handleActivity);
       document.removeEventListener("keypress", handleActivity);
