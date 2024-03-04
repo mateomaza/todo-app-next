@@ -16,7 +16,8 @@ import { sessionOptions } from "config/session.config";
 import { UserSession } from "types/session.types";
 import UserDelete from "@/app/auth/user/user.delete";
 import Header from "@/app/nav/header";
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from "isomorphic-dompurify";
+import Error from "@/app/nav/error";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -51,6 +52,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loadingTasks, setLoadingTasks] = useState<boolean>(true);
+  const [smallScreen, setSmallScreen] = useState(false);
 
   const handleOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -87,6 +89,15 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
     getTasks();
   }, [auth_cookie, user, UserObjectId, loading, error]);
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setSmallScreen(window.innerWidth < 576);
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   if (loading && loadingTasks) {
     return <Loading loading={loading || loadingTasks} />;
   }
@@ -103,9 +114,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
         }}
       >
         <Header />
-        <div className="sidebar flex flex-col justify-end mr-5 py-4 px-9 bg-slate-300 border-r-2 border-gray-500 fixed min-h-screen ">
-          <UserDelete UserObjectId={UserObjectId} />
-        </div>
+        <UserDelete />
         <div
           style={{
             display: "flex",
@@ -116,6 +125,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
           }}
           className="ml-[16rem] smd:ml-0"
         >
+          {error && <Error errorMessage={error}/>}
           <div
             style={{
               display: "flex",
@@ -125,10 +135,44 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               alignItems: "center",
             }}
           >
-            <h1 style={{ fontSize: "23px" }}>Hey {safeUsername}! Your tasks are here:</h1>
-            <Button variant="outlined" onClick={handleOpen} disabled={loading}>
-              Create a New Task
-            </Button>
+            {!smallScreen ? (
+              <>
+                <h1
+                  style={{ fontSize: "23px", marginBottom: "1rem" }}
+                >
+                  Hey {safeUsername}!{" "}
+                  {tasks.length > 0
+                    ? "Your tasks are here:"
+                    : "Any task for today?"}
+                </h1>
+                <Button
+                  variant="outlined"
+                  onClick={handleOpen}
+                  disabled={loading}
+                >
+                  Create a New Task
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="mb-5"
+                  variant="outlined"
+                  onClick={handleOpen}
+                  disabled={loading}
+                >
+                  Create a New Task
+                </Button>
+                <h1
+                  style={{ fontSize: "17px"}}
+                >
+                  Hey {safeUsername}!{" "}
+                  {tasks.length > 0
+                    ? "Your tasks are here:"
+                    : "Any task for today?"}
+                </h1>
+              </>
+            )}
           </div>
           <TaskModal open={modalOpen} handleClose={handleClose}>
             <TaskForm setTasks={setTasks} />
