@@ -31,7 +31,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    resetAuthState: () => initialState,
+    resetError(state) {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -154,7 +156,7 @@ const authSlice = createSlice({
         state.error = null;
         state.isLoggingOut = false;
         state.isRefreshing = false;
-        state.UserObjectId = undefined
+        state.UserObjectId = undefined;
       })
       .addCase(
         logout.rejected,
@@ -167,6 +169,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetAuthState } = authSlice.actions;
+export const { resetError: resetErrorAction } = authSlice.actions;
 
 export default authSlice.reducer;

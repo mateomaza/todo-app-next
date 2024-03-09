@@ -7,11 +7,11 @@ import Error from "@/app/nav/error";
 import Switch from "@mui/material/Switch";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { verifySession } from "@/redux/thunks/auth.thunks";
+import { verifySession, logout } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { MyDatePicker } from "../custom/date.picker";
 
 type FormData = {
@@ -24,9 +24,11 @@ type FormData = {
 const TaskForm = ({
   task = null,
   setTasks,
+  onClose,
 }: {
   task?: any;
   setTasks: (tasks: TaskType[]) => void;
+  onClose?: () => void;
 }) => {
   const getInitialDate = () => {
     if (task && task.time) {
@@ -48,7 +50,9 @@ const TaskForm = ({
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { UserObjectId, loading } = useSelector((state: RootState) => state.auth);
+  const { UserObjectId, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -104,12 +108,20 @@ const TaskForm = ({
           await updateTask(task.id, taskPayload);
         } else {
           await createTask(taskPayload);
+          onClose?.();
         }
         refreshTasks();
       }
       if (!verificationResult?.verified) {
         setErrorMessage("Session verification failed. Please log in again.");
-        router.push("/auth/login");
+        await dispatch(logout());
+        fetch("/api/logout-session", { method: "POST" })
+          .then(() => {
+            router.push("/auth/login");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
     } catch (error) {
       const err = error as { message?: string };
@@ -152,11 +164,10 @@ const TaskForm = ({
         />
       </label>
       <div className="flex flex-row items-center">
-        <p className="text-[16px] font-semibold py-3 mr-3">When are you doing this task?</p>
-        <MyDatePicker
-          selected={taskData.time}
-          onChange={handleDateChange}
-        />
+        <p className="text-[16px] font-semibold py-3 mr-3">
+          When are you doing this task?
+        </p>
+        <MyDatePicker selected={taskData.time} onChange={handleDateChange} />
       </div>
 
       <button

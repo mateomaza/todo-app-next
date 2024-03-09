@@ -20,6 +20,14 @@
   padding-bottom: 5rem;
 }
 
+.round-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: -63px;
+}
+
 @media(max-width: 767px){
   .sidebar{
   display: none;

@@ -2,23 +2,29 @@ import React, { useState } from "react";
 import DeleteButton from "@/app/nav/delete.button";
 import { deleteUser } from "@/services/user.service";
 import Error from "@/app/nav/error";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { resetAuthState } from '@/redux/slices/auth.slice';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useRouter } from "next/router";
 
-interface UserDeleteProps {
-  UserObjectId: string | undefined;
-};
-
-const UserDelete = ({ UserObjectId }: UserDeleteProps) => {
+const UserDelete = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const { UserObjectId } = useSelector((state: RootState) => state.auth);
 
   const handleUserDeletion = async () => {
     setErrorMessage("");
     try {
-      await deleteUser(UserObjectId);
-      dispatch(resetAuthState());
+      if (UserObjectId) {
+        await deleteUser(UserObjectId);
+        fetch("/api/logout-session", { method: "POST" })
+          .then(() => {
+            router.push("/auth/login");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
     } catch (error) {
       const err = error as { message?: string };
       setErrorMessage(err.message || "An error occurred during user deletion.");

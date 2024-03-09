@@ -27,6 +27,7 @@ const TaskDelete: React.FC<TaskDeleteProps> = ({ TaskObjectId, setTasks }) => {
       }
     }
   };
+
   const handleTaskDeletion = async () => {
     setErrorMessage("");
     try {

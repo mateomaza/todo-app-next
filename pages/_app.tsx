@@ -8,7 +8,9 @@ import {
   verifySession,
 } from "@/redux/thunks/auth.thunks";
 import { parseCookies } from "nookies";
+import Head from 'next/head';
 import "../styles/globals.css";
+import { useRouter } from "next/router";
 
 let inactivityTimer: NodeJS.Timeout | number;
 
@@ -83,6 +85,28 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <Provider store={store}>
+      <Head>
+        <link rel="icon" href="/favicon.ico" sizes="16x16" type="image/x-icon" />
+        <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+        <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="manifest" href="/manifest.json" />
+        <title>TaskTracker</title>
+        <meta name="description" content="Friendly app that allows you to have a record of your daily tasks." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#1E40AF" />
+        <meta property="og:title" content="TaskTracker" />
+        <meta property="og:description" content="Friendly app that allows you to have a record of your daily tasks" />
+        <meta property="og:image" content="https://www.holi.website/dalle-logo.png" />
+        <meta property="og:url" content="https://www.holi.website" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@mateomaza__" />
+        <meta name="twitter:title" content="TaskTracker" />
+        <meta name="twitter:description" content="Friendly app that allows you to have a record of your daily tasks" />
+        <meta name="twitter:image" content="https://www.holi.website/dalle-logo.png" />
+        <meta name="robots" content="index, follow" />
+      </Head>
       <Component {...pageProps} />
     </Provider>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ConfirmationModal from "@/app/nav/confirmation.modal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { verifySession } from "@/redux/thunks/auth.thunks";
+import { verifySession, logout } from "@/redux/thunks/auth.thunks";
 import { VerifyResponse } from "@/redux/types/auth.types";
 import { useRouter } from "next/router";
 import Error from "./error";
@@ -38,7 +38,14 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
         handleCloseModal();
       } else {
         setErrorMessage("Session verification failed. Please log in again.");
-        router.push("/auth/login");
+        await dispatch(logout());
+        fetch("/api/logout-session", { method: "POST" })
+          .then(() => {
+            router.push("/auth/login");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
     } catch (error) {
       setErrorMessage("An error occurred during verification.");
