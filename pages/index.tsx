@@ -18,6 +18,10 @@ import UserDelete from "@/app/auth/user/user.delete";
 import Header from "@/app/nav/header";
 import DOMPurify from "isomorphic-dompurify";
 import Error from "@/app/nav/error";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { resetErrorAction } from "@/redux/slices/auth.slice";
+import Head from "next/head";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -63,6 +67,11 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
 
   const safeUsername = DOMPurify.sanitize(user?.username as string);
 
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(resetErrorAction());
+  }, [dispatch]);
+
   useEffect(() => {
     const getTasks = async () => {
       if (auth_cookie && user && !loading && !error) {
@@ -103,84 +112,85 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
   }
 
   return (
-    <PrivateRoute>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          marginLeft: "-10px",
-          padding: "0px",
-          height: "100vh",
-        }}
-      >
-        <Header />
-        <UserDelete />
+    <>
+      <Head>
+        <link rel="canonical" href="https://www.holi.website" />
+      </Head>
+      <PrivateRoute>
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            marginTop: "7rem",
-            width: "100%",
-            padding: "0 2rem",
+            flexDirection: "row",
+            marginLeft: "-10px",
+            padding: "0px",
+            height: "100vh",
           }}
-          className="ml-[16rem] smd:ml-0"
         >
-          {error && <Error errorMessage={error}/>}
+          <Header />
+          <UserDelete />
           <div
             style={{
               display: "flex",
-              flexWrap: "wrap",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              flexDirection: "column",
+              marginTop: "7rem",
+              width: "100%",
+              padding: "0 2rem",
             }}
+            className="ml-[16rem] smd:ml-0"
           >
-            {!smallScreen ? (
-              <>
-                <h1
-                  style={{ fontSize: "23px", marginBottom: "1rem" }}
-                >
-                  Hey {safeUsername}!{" "}
-                  {tasks.length > 0
-                    ? "Your tasks are here:"
-                    : "Any task for today?"}
-                </h1>
-                <Button
-                  variant="outlined"
-                  onClick={handleOpen}
-                  disabled={loading}
-                >
-                  Create a New Task
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  className="mb-5"
-                  variant="outlined"
-                  onClick={handleOpen}
-                  disabled={loading}
-                >
-                  Create a New Task
-                </Button>
-                <h1
-                  style={{ fontSize: "17px"}}
-                >
-                  Hey {safeUsername}!{" "}
-                  {tasks.length > 0
-                    ? "Your tasks are here:"
-                    : "Any task for today?"}
-                </h1>
-              </>
-            )}
+            {error && <Error errorMessage={error} />}
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              {!smallScreen ? (
+                <>
+                  <h1 style={{ fontSize: "23px", marginBottom: "1rem" }}>
+                    Hey {safeUsername}!{" "}
+                    {tasks.length > 0
+                      ? "Your tasks are here:"
+                      : "Any task for today?"}
+                  </h1>
+                  <Button
+                    variant="outlined"
+                    onClick={handleOpen}
+                    disabled={loading}
+                  >
+                    Create a New Task
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    className="mb-5"
+                    variant="outlined"
+                    onClick={handleOpen}
+                    disabled={loading}
+                  >
+                    Create a New Task
+                  </Button>
+                  <h1 style={{ fontSize: "17px" }}>
+                    Hey {safeUsername}!{" "}
+                    {tasks.length > 0
+                      ? "Your tasks are here:"
+                      : "Any task for today?"}
+                  </h1>
+                </>
+              )}
+            </div>
+            <TaskModal open={modalOpen} handleClose={handleClose}>
+              <TaskForm setTasks={setTasks} onClose={handleClose} />
+            </TaskModal>
+            <TaskList tasks={tasks} setTasks={setTasks} />
           </div>
-          <TaskModal open={modalOpen} handleClose={handleClose}>
-            <TaskForm setTasks={setTasks} />
-          </TaskModal>
-          <TaskList tasks={tasks} setTasks={setTasks} />
         </div>
-      </div>
-    </PrivateRoute>
+      </PrivateRoute>
+    </>
   );
 };
 
