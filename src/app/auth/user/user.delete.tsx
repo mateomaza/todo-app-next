@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import DeleteButton from "@/app/nav/delete.button";
 import { deleteUser } from "@/services/user.service";
 import Error from "@/app/nav/error";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { useRouter } from "next/router";
 
 const UserDelete = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const { UserObjectId } = useSelector((state: RootState) => state.auth);
 
   const handleUserDeletion = async () => {
@@ -31,13 +30,14 @@ const UserDelete = () => {
     }
   };
 
-  if (errorMessage) {
-    return <Error errorMessage={errorMessage} />;
-  }
-
   return (
     <div className="sidebar flex flex-col justify-end mr-5 py-4 px-9 bg-slate-300 border-r-2 border-gray-500 fixed min-h-screen">
       <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] cursor-pointer">
+        {errorMessage && (
+          <div className="my-3">
+            <Error errorMessage={errorMessage} />
+          </div>
+        )}
         <i className="fa-solid fa-user-slash text-[16px] text-gray-400 mr-2 hover:text-white"></i>
         <DeleteButton
           onDelete={handleUserDeletion}

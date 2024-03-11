@@ -11,6 +11,7 @@ interface DeleteButtonProps {
   title: string;
   description: string;
   taskDelete?: boolean;
+  noText?: boolean;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
@@ -18,6 +19,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   title,
   description,
   taskDelete,
+  noText,
 }) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -64,7 +66,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
           disabled={loading}
           data-testid="delete-button"
         >
-          Delete User
+          {noText ? "" : "Delete User"}
         </button>
       )}
 

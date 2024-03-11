@@ -90,11 +90,11 @@ const LoginForm = () => {
         >
           Login
         </button>
-        <div className="my-3">
-          {(error || validationError) && (
+        {error || validationError && (
+          <div className="my-3">
             <Error errorMessage={error || validationError} />
-          )}
-        </div>
+          </div>
+        )}
       </form>
     </div>
   );

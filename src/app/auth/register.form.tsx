@@ -105,11 +105,11 @@ const RegisterForm = () => {
           <li>▫️ Password cannot contain your username.</li>
         </ul>
       </div>
-      <div className="my-3">
-          {(error || validationError) && (
+      {error || validationError && (
+          <div className="my-3">
             <Error errorMessage={error || validationError} />
-          )}
-        </div>
+          </div>
+        )}
       <button
         type="submit"
         disabled={loading}

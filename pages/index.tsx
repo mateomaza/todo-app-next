@@ -167,7 +167,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               ) : (
                 <>
                   <Button
-                    className="mb-4"
+                    className="mb-"
                     variant="outlined"
                     onClick={handleOpen}
                     disabled={loading}
