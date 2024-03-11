@@ -14,6 +14,7 @@ export function MyDatePicker({ selected, onChange }: MyDatePickerProps) {
         onChange={onChange}
         showTimeSelect
         dateFormat="Pp"
+        timeIntervals={5}
       />
     </div>
   );
