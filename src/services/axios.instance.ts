@@ -5,7 +5,7 @@ import { parseCookies } from 'nookies';
 import Router from "next/router";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://todo-app-api-production-2472.up.railway.app/api",
+  baseURL: "http://localhost:3001/api",
   withCredentials: true,
 });
 
