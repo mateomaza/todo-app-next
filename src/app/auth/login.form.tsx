@@ -5,7 +5,7 @@ import { AppDispatch } from "@/redux/store";
 import { login } from "@/redux/thunks/auth.thunks";
 import { RootState } from "@/redux/store";
 import Error from "@/app/nav/error";
-import { parseCookies } from "nookies";
+import Cookies from 'js-cookie';
 
 type FormData = {
   username: string;
@@ -21,9 +21,7 @@ const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const cookies = parseCookies();
-  console.log('cookies', cookies)
-  const auth_cookie = cookies["authenticated"];
+  const auth_cookie = Cookies.get('authenticated');
 
   useEffect(() => {
     console.log('auth_cookie', auth_cookie);

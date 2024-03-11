@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Loading from "@/app/nav/loading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { parseCookies } from "nookies";
+import Cookies from 'js-cookie';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { isRefreshing, loading } = useSelector((state: RootState) => state.auth);
-  const cookies = parseCookies({})
-  const auth_cookie = cookies["authenticated"]; 
+  const auth_cookie = Cookies.get('authenticated'); 
 
   useEffect(() => {
     if (!auth_cookie && !isRefreshing && !loading) {

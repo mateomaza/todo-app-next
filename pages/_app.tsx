@@ -7,10 +7,9 @@ import {
   refreshToken,
   verifySession,
 } from "@/redux/thunks/auth.thunks";
-import { parseCookies } from "nookies";
+import Cookies from 'js-cookie';
 import Head from 'next/head';
 import "../styles/globals.css";
-import { useRouter } from "next/router";
 
 let inactivityTimer: NodeJS.Timeout | number;
 
@@ -35,8 +34,7 @@ const resetInactivityTimer = (timeout = 15 * 60 * 1000) => {
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   useEffect(() => {
-    const cookies = parseCookies({});
-    const auth_cookie = cookies["authenticated"];
+    const auth_cookie = Cookies.get('authenticated');
     const { token, error, loading } = store.getState().auth;
     if (auth_cookie && !token && !error && !loading) {
       store.dispatch(refreshToken());
@@ -44,8 +42,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   }, []);
 
   useEffect(() => {
-    const cookies = parseCookies({});
-    const auth_cookie = cookies["authenticated"];
+    const auth_cookie = Cookies.get('authenticated');
     const verify = async () => {
       const { error, loading } = store.getState().auth;
       if (auth_cookie && !error && !loading) {
@@ -65,8 +62,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     const handleActivity = () => resetInactivityTimer();
     document.addEventListener("mousemove", handleActivity);
     document.addEventListener("keypress", handleActivity);
-    const cookies = parseCookies({});
-    const auth_cookie = cookies["authenticated"];
+    const auth_cookie = Cookies.get('authenticated');
     if (auth_cookie) {
       startInactivityTimer();
     }
