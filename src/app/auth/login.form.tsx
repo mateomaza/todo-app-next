@@ -21,7 +21,8 @@ const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const cookies = parseCookies({});
+  const cookies = parseCookies();
+  console.log('cookies', cookies)
   const auth_cookie = cookies["authenticated"];
 
   useEffect(() => {
