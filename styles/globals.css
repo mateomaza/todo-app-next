@@ -25,7 +25,12 @@
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  margin-left: -63px;
+}
+
+@media (min-width: 576px) {
+  .round-logo {
+    margin-left: -63px;
+  }
 }
 
 @media(max-width: 767px){

@@ -167,14 +167,14 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               ) : (
                 <>
                   <Button
-                    className="mb-5"
+                    className="mb-4"
                     variant="outlined"
                     onClick={handleOpen}
                     disabled={loading}
                   >
                     Create a New Task
                   </Button>
-                  <h1 style={{ fontSize: "17px" }}>
+                  <h1 style={{ fontSize: "17px" }} className="mt-4">
                     Hey {safeUsername}!{" "}
                     {tasks.length > 0
                       ? "Your tasks are here:"
