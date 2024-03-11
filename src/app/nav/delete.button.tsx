@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import ConfirmationModal from "@/app/nav/confirmation.modal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { verifySession, logout } from "@/redux/thunks/auth.thunks";
-import { VerifyResponse } from "@/redux/types/auth.types";
+import { logout } from "@/redux/thunks/auth.thunks";
 import { useRouter } from "next/router";
 import Error from "./error";
 
@@ -31,23 +30,17 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
   const handleDelete = async () => {
     try {
-      const actionResult = await dispatch(verifySession());
-      const verificationResult = actionResult.payload as VerifyResponse;
-      if (verificationResult?.verified) {
-        onDelete();
-        handleCloseModal();
-      } else {
-        setErrorMessage("Session verification failed. Please log in again.");
-        await dispatch(logout());
-        fetch("/api/logout-session", { method: "POST" })
-          .then(() => {
-            router.push("/auth/login");
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
+      onDelete();
+      handleCloseModal();
     } catch (error) {
+      await dispatch(logout());
+      fetch("/api/logout-session", { method: "POST" })
+        .then(() => {
+          router.push("/auth/login");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       setErrorMessage("An error occurred during verification.");
     }
   };

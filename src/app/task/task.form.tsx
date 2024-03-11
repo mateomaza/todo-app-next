@@ -7,8 +7,7 @@ import Error from "@/app/nav/error";
 import Switch from "@mui/material/Switch";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { verifySession, logout } from "@/redux/thunks/auth.thunks";
-import { VerifyResponse } from "@/redux/types/auth.types";
+import { logout } from "@/redux/thunks/auth.thunks";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -96,9 +95,7 @@ const TaskForm = ({
     e.preventDefault();
     setErrorMessage("");
     try {
-      const actionResult = await dispatch(verifySession());
-      const verificationResult = actionResult.payload as VerifyResponse;
-      if (verificationResult?.verified && UserObjectId) {
+      if (UserObjectId) {
         const taskPayload = {
           ...taskData,
           time: taskData.time.toISOString(),
@@ -112,9 +109,9 @@ const TaskForm = ({
         }
         refreshTasks();
       }
-      if (!verificationResult?.verified) {
-        setErrorMessage("Session verification failed. Please log in again.");
-        await dispatch(logout());
+    } catch (error) {
+      const err = error as { message?: string };
+      await dispatch(logout());
         fetch("/api/logout-session", { method: "POST" })
           .then(() => {
             router.push("/auth/login");
@@ -122,11 +119,7 @@ const TaskForm = ({
           .catch((error) => {
             console.error(error);
           });
-      }
-    } catch (error) {
-      const err = error as { message?: string };
       setErrorMessage(err.message || "An error occurred during verification.");
-      router.push("/auth/login");
     }
   };
 

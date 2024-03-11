@@ -5,7 +5,6 @@ import { AppProps } from "next/app";
 import {
   logout,
   refreshToken,
-  verifySession,
 } from "@/redux/thunks/auth.thunks";
 import Cookies from 'js-cookie';
 import Head from 'next/head';
@@ -39,23 +38,6 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     if (auth_cookie && !token && !error && !loading) {
       store.dispatch(refreshToken());
     }
-  }, []);
-
-  useEffect(() => {
-    const auth_cookie = Cookies.get('authenticated');
-    const verify = async () => {
-      const { error, loading } = store.getState().auth;
-      if (auth_cookie && !error && !loading) {
-        store.dispatch(verifySession());
-      }
-    };
-    const timeout = setTimeout(verify);
-    const interval = setInterval(verify, 13 * 60 * 1000);
-
-    return () => {
-      clearTimeout(timeout);
-      clearInterval(interval);
-    };
   }, []);
 
   useEffect(() => {
