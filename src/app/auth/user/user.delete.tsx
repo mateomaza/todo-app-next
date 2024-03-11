@@ -19,7 +19,7 @@ const UserDelete = () => {
         await deleteUser(UserObjectId);
         fetch("/api/logout-session", { method: "POST" })
           .then(() => {
-            router.push("/auth/login");
+            router.push("/auth/register");
           })
           .catch((error) => {
             console.error(error);
