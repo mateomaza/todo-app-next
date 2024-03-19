@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import ConfirmationModal from "@/app/nav/confirmation.modal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -14,13 +14,17 @@ interface DeleteButtonProps {
   noText?: boolean;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({
+export interface DeleteButtonHandle {
+  openModal: () => void;
+}
+
+const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteButtonProps> = ({
   onDelete,
   title,
   description,
   taskDelete,
   noText,
-}) => {
+}, ref) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
@@ -29,6 +33,10 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
+
+  useImperativeHandle(ref, () => ({
+    openModal: handleOpenModal,
+  }));  
 
   const handleDelete = async () => {
     try {
@@ -81,4 +89,4 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   );
 };
 
-export default DeleteButton;
+export default forwardRef(DeleteButton);

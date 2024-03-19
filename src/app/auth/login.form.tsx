@@ -24,7 +24,6 @@ const LoginForm = () => {
   const auth_cookie = Cookies.get('authenticated');
 
   useEffect(() => {
-    console.log('auth_cookie', auth_cookie);
     if (auth_cookie && !loading && !error) {
       router.push("/");
     }
