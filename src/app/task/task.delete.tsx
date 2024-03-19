@@ -3,6 +3,8 @@ import DeleteButton from "@/app/nav/delete.button";
 import { TaskType, deleteTask, fetchTasks } from "@/services/task.service";
 import axios from "axios";
 import Error from "@/app/nav/error";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface TaskDeleteProps {
   TaskObjectId: string | undefined;
@@ -11,10 +13,11 @@ interface TaskDeleteProps {
 
 const TaskDelete: React.FC<TaskDeleteProps> = ({ TaskObjectId, setTasks }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const { UserObjectId } = useSelector((state: RootState) => state.auth);
 
   const refreshTasks = async () => {
     try {
-      const response = await fetchTasks();
+      const response = await fetchTasks(UserObjectId);
       setTasks(response);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
