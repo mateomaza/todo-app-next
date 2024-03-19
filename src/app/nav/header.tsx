@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "../auth/logout.button";
 import Image from "next/image";
@@ -50,13 +50,13 @@ const Header = () => {
       <div className="flex flex-row w-full justify-end">
         <LogoutButton />
         <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] md:hidden  smd:ml-4 cursor-pointer">
-          <i className="fa-solid fa-user-slash text-[18px] text-gray-400 mr-3 smd:mr-0 hover:text-white"></i>
           <DeleteButton
-          onDelete={handleUserDeletion}
-          title="Confirm Account Deletion"
-          description="Are you sure you want to delete your account? This action cannot be undone."
-          noText={true}
-        />
+            onDelete={handleUserDeletion}
+            title="Confirm Account Deletion"
+            description="Are you sure you want to delete your account? This action cannot be undone."
+            noText={true}
+          />
+          <i className="fa-solid fa-user-slash text-[18px] text-gray-400 mr-3 smd:mr-0 hover:text-white"></i>
         </div>
       </div>
     </div>
