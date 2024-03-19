@@ -17,7 +17,6 @@ interface DeleteButtonProps {
 
 export interface DeleteButtonHandle {
   openModal: () => void;
-  closeModal: () => void;
 
 }
 
@@ -38,7 +37,6 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
 
   useImperativeHandle(ref, () => ({
     openModal: handleOpenModal,
-    closeModal: handleCloseModal,
   }));  
 
   const handleDelete = async () => {

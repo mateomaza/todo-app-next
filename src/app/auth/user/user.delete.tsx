@@ -34,13 +34,13 @@ const UserDelete = () => {
 
   return (
     <div className="sidebar flex flex-col justify-end mr-5 py-4 px-9 bg-slate-300 border-r-2 border-gray-500 fixed min-h-screen">
-      <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] cursor-pointer" onClick={() => deleteButtonRef.current!.openModal()}>
+      <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] cursor-pointer">
         {errorMessage && (
           <div className="my-3">
             <Error errorMessage={errorMessage} />
           </div>
         )}
-        <i className="fa-solid fa-user-slash text-[16px] text-gray-400 mr-2 hover:text-white"></i>
+        <i className="fa-solid fa-user-slash text-[16px] text-gray-400 mr-2 hover:text-white" onClick={() => deleteButtonRef.current!.openModal()}></i>
         <DeleteButton
           ref={deleteButtonRef}
           onDelete={handleUserDeletion}

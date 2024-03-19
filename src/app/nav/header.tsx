@@ -57,8 +57,8 @@ const Header = () => {
           </div>
         )}
         <LogoutButton />
-        <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] md:hidden  smd:ml-4 cursor-pointer" onClick={() => deleteButtonRef.current!.openModal()}> 
-          <i className="fa-solid fa-user-slash text-[18px] text-gray-400 mr-3 smd:mr-0 hover:text-white"></i>
+        <div className="flex flex-row items-center justify-center border-2 border-blue-600 hover:bg-blue-600 hover:text-white px-2 py-2 rounded-[4px] md:hidden  smd:ml-4 cursor-pointer"> 
+          <i className="fa-solid fa-user-slash text-[18px] text-gray-400 mr-3 smd:mr-0 hover:text-white" onClick={() => deleteButtonRef.current!.openModal()}></i>
           <DeleteButton
             ref={deleteButtonRef}
             onDelete={handleUserDeletion}
