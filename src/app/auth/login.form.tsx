@@ -5,8 +5,7 @@ import { AppDispatch } from "@/redux/store";
 import { login } from "@/redux/thunks/auth.thunks";
 import { RootState } from "@/redux/store";
 import Error from "@/app/nav/error";
-import Cookies from "js-cookie";
-import Loading from "../nav/loading";
+import Cookies from 'js-cookie';
 
 type FormData = {
   username: string;
@@ -22,7 +21,7 @@ const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const auth_cookie = Cookies.get("authenticated");
+  const auth_cookie = Cookies.get('authenticated');
 
   useEffect(() => {
     if (auth_cookie && !loading && !error) {
@@ -83,23 +82,18 @@ const LoginForm = () => {
           className="my-2 py-2 px-3 rounded-[5px] text-black"
           required
         />
-        {loading! ? (
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
-          >
-            Login
-          </button>
-        ) : (
-          <Loading loading={loading} />
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
+        >
+          Login
+        </button>
+        {error || validationError && (
+          <div className="my-3">
+            <Error errorMessage={error || validationError} />
+          </div>
         )}
-        {error ||
-          (validationError && (
-            <div className="my-3">
-              <Error errorMessage={error || validationError} />
-            </div>
-          ))}
       </form>
     </div>
   );
