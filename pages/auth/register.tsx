@@ -4,20 +4,13 @@ import RegisterForm from "@/app/auth/register.form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { resetErrorAction } from "@/redux/slices/auth.slice";
-import Loading from "@/app/nav/loading";
 import Head from "next/head";
 
 export default function Register() {
-  const { loading } = useSelector((state: RootState) => state.auth);
-
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(resetErrorAction());
   }, [dispatch]);
-
-  if (loading) {
-    return <Loading loading={loading} />;
-  }
 
   return (
     <>

@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { logout } from "@/redux/thunks/auth.thunks";
 import { useRouter } from "next/router";
 import Error from "./error";
+import Loading from "./loading";
 
 interface DeleteButtonProps {
   onDelete: () => void;
@@ -26,13 +27,14 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
   noText,
 }, ref) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: RootState) => state.auth);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
+  
+  console.log('isModalOpen', isModalOpen);
 
   useImperativeHandle(ref, () => ({
     openModal: handleOpenModal,
@@ -51,13 +53,8 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
         .catch((error) => {
           console.error(error);
         });
-      setErrorMessage("An error occurred during verification.");
     }
   };
-
-  if (errorMessage) {
-    return <Error errorMessage={errorMessage} />;
-  }
 
   return (
     <>
@@ -77,7 +74,6 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
           {noText ? "" : "Delete User"}
         </button>
       )}
-
       <ConfirmationModal
         open={isModalOpen}
         handleClose={handleCloseModal}

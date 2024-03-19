@@ -5,7 +5,8 @@ import { AppDispatch } from "@/redux/store";
 import { register } from "@/redux/thunks/auth.thunks";
 import { RootState } from "@/redux/store";
 import Error from "@/app/nav/error";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+import Loading from "../nav/loading";
 
 type FormData = {
   username: string;
@@ -23,7 +24,7 @@ const RegisterForm = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
-  const auth_cookie = Cookies.get('authenticated');
+  const auth_cookie = Cookies.get("authenticated");
 
   useEffect(() => {
     if (auth_cookie && !loading && !error) {
@@ -97,26 +98,33 @@ const RegisterForm = () => {
       <div className="my-5">
         <ul>
           <li>
-          ▫️ Username must be 3-20 characters long and can only include
+            ▫️ Username must be 3-20 characters long and can only include
             alphanumeric characters.
           </li>
           <li>▫️ Password must be at least 12 characters long.</li>
-          <li>▫️ Password must include both alphabetic and numeric characters.</li>
+          <li>
+            ▫️ Password must include both alphabetic and numeric characters.
+          </li>
           <li>▫️ Password cannot contain your username.</li>
         </ul>
       </div>
-      {error || validationError && (
+      {error ||
+        (validationError && (
           <div className="my-3">
             <Error errorMessage={error || validationError} />
           </div>
-        )}
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
-      >
-        Register
-      </button>
+        ))}
+      {!loading ? (
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
+        >
+          Register
+        </button>
+      ) : (
+        <Loading loading={loading} />
+      )}
     </form>
   );
 };
