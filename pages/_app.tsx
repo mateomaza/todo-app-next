@@ -35,7 +35,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   useEffect(() => {
     const auth_cookie = Cookies.get('authenticated');
     const { token, error, loading } = store.getState().auth;
-    if (auth_cookie && !token && !error && !loading) {
+    if (auth_cookie && !token && !loading) {
       store.dispatch(refreshToken());
     }
   }, []);

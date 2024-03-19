@@ -74,7 +74,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
 
   useEffect(() => {
     const getTasks = async () => {
-      if (auth_cookie && UserObjectId && !loading && !error) {
+      if (auth_cookie && UserObjectId && !loading) {
         const response = await fetchTasks(UserObjectId);
         setTasks(response);
         setLoadingTasks(false);
