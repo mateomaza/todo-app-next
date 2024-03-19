@@ -26,10 +26,10 @@ const RegisterForm = () => {
   const auth_cookie = Cookies.get('authenticated');
 
   useEffect(() => {
-    if (auth_cookie && !loading && !error) {
+    if (auth_cookie && !loading) {
       router.push("/");
     }
-  }, [auth_cookie, loading, error, router]);
+  }, [auth_cookie, loading, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
