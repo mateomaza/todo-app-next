@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { MyDatePicker } from "../custom/date.picker";
+import Loading from "../nav/loading";
 
 type FormData = {
   title: string;
@@ -126,6 +127,10 @@ const TaskForm = ({
   if (errorMessage) {
     return <Error errorMessage={errorMessage} />;
   }
+
+  if (loading) {
+    return <Loading loading={loading} />;
+  }  
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
