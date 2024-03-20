@@ -113,7 +113,7 @@ const RegisterForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className="bg-lime-500 hover:bg-lime-600 text-[18px] font-bold py-2 my-3 rounded-[4px]"
+        className="bg-lime-800 hover:bg-lime-900 text-[18px] font-bold py-2 my-3 rounded-[4px]"
       >
         Register
       </button>
