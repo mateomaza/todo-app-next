@@ -135,7 +135,7 @@ const TaskForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col">
-      <p className="text-[16px] font-semibold py-3">Task Title:</p>
+      <p className="text-[16px] font-semibold py-3">Title:</p>
       <input
         type="text"
         value={taskData.title}
@@ -145,7 +145,7 @@ const TaskForm = ({
         className="bg-white border border-[#aba9a9] mb-3 py-1 px-3 rounded-[3px] text-black text-[14px] shadow-inner"
         required
       />
-      <p className="text-[16px] font-semibold py-3">Task Description:</p>
+      <p className="text-[16px] font-semibold py-3">Description:</p>
       <textarea
         value={taskData.description}
         onChange={handleChange}
