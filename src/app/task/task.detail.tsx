@@ -74,7 +74,7 @@ const TaskDetail = ({
         </div>
       </div>
       <TaskModal open={modalOpen} handleClose={handleClose}>
-        <TaskForm task={task} setTasks={setTasks} />
+        <TaskForm task={task} setTasks={setTasks} onClose={handleClose} />
       </TaskModal>
     </div>
   );

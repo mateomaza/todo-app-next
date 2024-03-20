@@ -104,6 +104,7 @@ const TaskForm = ({
         };
         if (task) {
           await updateTask(task.id, taskPayload);
+          onClose?.();
         } else {
           await createTask(taskPayload);
           onClose?.();
