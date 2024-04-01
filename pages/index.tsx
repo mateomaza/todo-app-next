@@ -22,7 +22,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetErrorAction } from "@/redux/slices/auth.slice";
 import Head from "next/head";
-import { Footer } from "@/app/nav/footer";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -175,9 +174,6 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               <TaskForm setTasks={setTasks} onClose={handleClose} />
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
-            <div>
-              <Footer />
-            </div>
           </div>
         </div>
       </PrivateRoute>
