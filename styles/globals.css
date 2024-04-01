@@ -27,7 +27,7 @@
   object-fit: cover;
 }
 
-@media (min-width: 576px) {
+@media (max-width: 576px) {
   #created-by {
     display: none;
   }
