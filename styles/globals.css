@@ -28,7 +28,7 @@
 }
 
 @media (min-width: 576px) {
-  .created-by {
+  #created-by {
     display: none;
   }
 }
@@ -37,8 +37,5 @@
 @media(max-width: 767px){
   .sidebar{
   display: none;
-  }
-  .round-logo {
-    margin-left: -69px;
   }
 }
