@@ -35,8 +35,8 @@ const Header = () => {
     }
   };
   return (
-    <div className="bg-white shadow-md w-full text-black font-bold h-[90px] fixed top-0 left-0 flex items-center px-6 py-3 z-50">
-      <div className="flex items-center justify-start w-1/3">
+    <div className="bg-white shadow-md w-full text-black font-bold h-[90px] fixed top-0 left-0 flex items-center justify-between px-6 py-3 z-50">
+      <div className="flex items-center justify-start">
         <Link href="/" passHref>
           <a className="flex items-center">
             <h2 className="text-[20px] smd:text-[16px] smd:w-[6rem] md:w-[13rem]">
@@ -65,7 +65,7 @@ const Header = () => {
           </a>
         </p>
       </div>
-      <div className="flex items-center justify-end w-1/3">
+      <div className="flex items-center justify-end">
         {errorMessage && (
           <div className="my-3 mr-4">
             <Error errorMessage={errorMessage} />
