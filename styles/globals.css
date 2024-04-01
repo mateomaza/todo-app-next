@@ -39,3 +39,9 @@
   display: none;
   }
 }
+
+@media(min-width: 767px){
+  .round-logo {
+    margin-left: -69px;
+  }
+}
