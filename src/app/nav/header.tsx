@@ -50,6 +50,9 @@ const Header = () => {
           />
         </div>
       </Link>
+      <div>
+      <p>Created by <a href="https://linktr.ee/mateomaza" target="_blank">Mateo Maza</a></p>
+      </div>
       <div className="flex flex-row w-full justify-end">
         {errorMessage && (
           <div className="my-3">
