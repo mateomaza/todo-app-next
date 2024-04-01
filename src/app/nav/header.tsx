@@ -47,7 +47,7 @@ const Header = () => {
               alt="Logo"
               width={1024}
               height={1024}
-              className="ml-1 round-logo"
+              className="round-logo"
             />
           </a>
         </Link>
