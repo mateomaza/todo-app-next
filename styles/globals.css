@@ -27,6 +27,13 @@
   object-fit: cover;
 }
 
+@media (min-width: 576px) {
+  .created-by {
+    display: none;
+  }
+}
+
+
 @media(max-width: 767px){
   .sidebar{
   display: none;

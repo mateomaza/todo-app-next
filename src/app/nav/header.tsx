@@ -52,7 +52,7 @@ const Header = () => {
           </a>
         </Link>
       </div>
-      <div className="flex-grow text-center sm:hidden">
+      <div id="created-by" className="flex-grow text-center">
         <p className="text-sm font-light">
           App created by{" "}
           <a
