@@ -27,12 +27,6 @@
   object-fit: cover;
 }
 
-@media (min-width: 576px) {
-  .round-logo {
-    margin-left: -63px;
-  }
-}
-
 @media(max-width: 767px){
   .sidebar{
   display: none;
