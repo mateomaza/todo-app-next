@@ -176,7 +176,9 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
           </div>
-          <Footer />
+          <div>
+            <Footer />
+          </div>
         </div>
       </PrivateRoute>
     </>
