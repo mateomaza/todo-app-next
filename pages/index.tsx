@@ -175,9 +175,9 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               <TaskForm setTasks={setTasks} onClose={handleClose} />
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
-          </div>
-          <div>
-            <Footer />
+            <div>
+              <Footer />
+            </div>
           </div>
         </div>
       </PrivateRoute>
