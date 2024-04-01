@@ -87,7 +87,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setSmallScreen(window.innerWidth < 576);
+      setSmallScreen(window.innerWidth < 800);
     };
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);

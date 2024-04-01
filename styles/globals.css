@@ -31,4 +31,7 @@
   .sidebar{
   display: none;
   }
+  .round-logo {
+    margin-left: -69px;
+  }
 }
