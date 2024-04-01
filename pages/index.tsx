@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetErrorAction } from "@/redux/slices/auth.slice";
 import Head from "next/head";
+import { Footer } from "@/app/nav/footer";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -174,23 +175,9 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               <TaskForm setTasks={setTasks} onClose={handleClose} />
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
-          </div>
-          <div id="created-by-small">
-            <footer
-              style={{ textAlign: "center", margin: "20px 0" }}
-            >
-              <p className="text-sm font-light">
-                App created by{" "}
-                <a
-                  href="https://linktr.ee/mateomaza"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  <u>Mateo Maza</u>
-                </a>
-              </p>
-            </footer>
+            <div id="created-by-small">
+              <Footer/>
+            </div>
           </div>
         </div>
       </PrivateRoute>
