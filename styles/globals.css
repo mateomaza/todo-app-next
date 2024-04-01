@@ -33,6 +33,11 @@
   }
 }
 
+@media (min-width: 576px) {
+  #created-by-small {
+    display: none;
+  }
+}
 
 @media(max-width: 767px){
   .sidebar{

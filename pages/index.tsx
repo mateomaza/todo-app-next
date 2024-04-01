@@ -175,6 +175,19 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
           </div>
+          <footer id="created-by-small" style={{ textAlign: "center", margin: "20px 0" }}>
+            <p className="text-sm font-light">
+              App created by{" "}
+              <a
+                href="https://linktr.ee/mateomaza"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                <u>Mateo Maza</u>
+              </a>
+            </p>
+          </footer>
         </div>
       </PrivateRoute>
     </>
