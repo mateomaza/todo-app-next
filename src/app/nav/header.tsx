@@ -56,9 +56,9 @@ const Header = () => {
             <Error errorMessage={errorMessage} />
           </div>
         )}
-        <div>
+        <div className="text-sm font-light mr-4">
           <p>
-            Created by{" "}
+            App created by{" "}
             <a
               href="https://linktr.ee/mateomaza"
               target="_blank"
