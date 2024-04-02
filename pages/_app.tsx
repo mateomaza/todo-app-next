@@ -75,14 +75,14 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         <meta name="theme-color" content="#1E40AF" />
         <meta property="og:title" content="TaskTracker" />
         <meta property="og:description" content="Friendly app that allows you to have a record of your daily tasks" />
-        <meta property="og:image" content="https://www.holi.website/dalle-logo.png" />
+        <meta property="og:image" content="https://www.holi.website/featured-image.png" />
         <meta property="og:url" content="https://www.holi.website" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@mateomaza__" />
         <meta name="twitter:title" content="TaskTracker" />
         <meta name="twitter:description" content="Friendly app that allows you to have a record of your daily tasks" />
-        <meta name="twitter:image" content="https://www.holi.website/dalle-logo.png" />
+        <meta name="twitter:image" content="https://www.holi.website/featured-image.png" />
         <meta name="robots" content="index, follow" />
       </Head>
       <Component {...pageProps} />
