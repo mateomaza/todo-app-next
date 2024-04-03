@@ -17,16 +17,12 @@ interface DeleteButtonProps {
 
 export interface DeleteButtonHandle {
   openModal: () => void;
-
 }
 
-const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteButtonProps> = ({
-  onDelete,
-  title,
-  description,
-  taskDelete,
-  noText,
-}, ref) => {
+const DeleteButton: React.ForwardRefRenderFunction<
+  DeleteButtonHandle,
+  DeleteButtonProps
+> = ({ onDelete, title, description, taskDelete, noText }, ref) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -37,7 +33,7 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
 
   useImperativeHandle(ref, () => ({
     openModal: handleOpenModal,
-  }));  
+  }));
 
   const handleDelete = async () => {
     try {
@@ -58,12 +54,11 @@ const DeleteButton: React.ForwardRefRenderFunction<DeleteButtonHandle, DeleteBut
   return (
     <>
       {taskDelete ? (
-        <i
-          className="fa-solid fa-trash-can text-gray-500 cursor-pointer"
-          onClick={handleOpenModal}
-          role="button"
-          aria-label="Delete task"
-        ></i>
+        <button aria-label="Delete task" onClick={handleOpenModal} className="text-gray-500 cursor-pointer" style={{ background: 'none', border: 'none', padding: 0 }}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" role="img">
+            <path d="M512 64V288H64L64 64H512zM64 0C28.7 0 0 28.7 0 64V288c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM0 448v32c0 17.7 14.3 32 32 32H64c17.7 0 32-14.3 32-32V448c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zm192-32c-17.7 0-32 14.3-32 32v32c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V448c0-17.7-14.3-32-32-32H192zm128 32v32c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V448c0-17.7-14.3-32-32-32H352c-17.7 0-32 14.3-32 32zm192-32c-17.7 0-32 14.3-32 32v32c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32V448c0-17.7-14.3-32-32-32H512z"/>
+          </svg>
+        </button>
       ) : (
         <button
           onClick={handleOpenModal}
