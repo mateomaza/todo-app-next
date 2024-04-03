@@ -175,7 +175,7 @@ const HomePage: React.FC<HomePageProps> = ({ auth_cookie }) => {
               <TaskForm setTasks={setTasks} onClose={handleClose} />
             </TaskModal>
             <TaskList tasks={tasks} setTasks={setTasks} />
-            <div id="created-by-small">
+            <div id="created-by-small" className="mt-10">
               <Footer/>
             </div>
           </div>
